@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Ad Skipper</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="Prototype by Tilt Ventures">
+    <meta property="og:title" content="Tilt Ad-Skipper">
+    <meta property="og:description" content="Prototype by Tilt Ventures">
+    <meta property="og:image" content="https://egr-demo-bucket.s3.amazonaws.com/logo-discord-2.png">
+
+    {{content-for "head"}}
+
+    <link integrity="" rel="stylesheet" href="{{rootURL}}assets/vendor.css">
+    <link integrity="" rel="stylesheet" href="{{rootURL}}assets/player-basic.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+    {{content-for "head-footer"}}
+  </head>
+  <body class="font-roboto font-normal">
+    {{content-for "body"}}
+
+    <script src="{{rootURL}}assets/vendor.js"></script>
+    <script src="{{rootURL}}assets/player-basic.js"></script>
+
+    {{content-for "body-footer"}}
+  </body>
+</html>
