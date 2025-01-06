@@ -32,7 +32,6 @@ export default class LoginController extends Controller {
       }
     } catch (error) {
       // Display error message
-      debugger;
       this.errorMessage = error.message || 'Invalid email or password';
     } finally {
       this.isLoading = false;

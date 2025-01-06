@@ -26,7 +26,7 @@ function routes() {
     let attrs = JSON.parse(request.requestBody);
     
     // Valid credentials check
-    if (attrs.email === 'user@gauntlet.ai' && attrs.password === 'password123') {
+    if (attrs.email === 'user@gauntlet.ai' && attrs.password === 'In23949dfskdsfske') {
       return {
         access_token: 'valid.mock.token',
         token_type: 'bearer',
