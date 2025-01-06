@@ -20,9 +20,19 @@ module.exports = function (environment) {
     },
   };
 
+  ENV['ember-cli-mirage'] = {
+    enabled: true
+  };
+
   if (environment === 'development') {
     ENV.APP.API_HOST = 'http://localhost:3000';
+    ENV['ember-cli-mirage'] = {
+      enabled: true
+    };
+    
   }
+
+  
 
   if (environment === 'test') {
     ENV.locationType = 'none';
@@ -30,10 +40,16 @@ module.exports = function (environment) {
     ENV.APP.LOG_VIEW_LOOKUPS = false;
     ENV.APP.rootElement = '#ember-testing';
     ENV.APP.autoboot = false;
+    ENV['ember-cli-mirage'] = {
+      enabled: true
+    };
   }
 
   if (environment === 'production') {
     ENV.APP.API_HOST = 'https://apple-server.fly.dev';
+    ENV['ember-cli-mirage'] = {
+      enabled: true
+    };
   }
 
   return ENV;

@@ -4,7 +4,13 @@
       gauntletai-workspace.slack.com
     </h1>
     
-    <form class="space-y-6">
+    {{#if this.errorMessage}}
+      <div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+        {{this.errorMessage}}
+      </div>
+    {{/if}}
+
+    <form class="space-y-6" {{on "submit" this.signIn}}>
       <div>
         <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
           Email Address
@@ -12,8 +18,11 @@
         <input 
           type="email" 
           id="email"
+          name="email"
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
           placeholder="you@example.com"
+          value="user@gauntlet.ai"
+          required
         >
       </div>
 
@@ -24,17 +33,20 @@
         <input 
           type="password" 
           id="password"
+          name="password"
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
           placeholder="Enter your password"
+          value="password123"
+          required
         >
       </div>
 
       <button 
-        type="button" 
-        class="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
-        {{on "click" this.signIn}}
+        type="submit" 
+        class="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50"
+        disabled={{this.isLoading}}
       >
-        Sign In
+        {{if this.isLoading "Signing in..." "Sign In"}}
       </button>
     </form>
   </div>
