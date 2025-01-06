@@ -1,4 +1,109 @@
-<div class="bg-red-500 p-4 text-white">
-  Hello World
+<div class="h-screen flex flex-col">
+  {{!-- Header --}}
+  <header class="h-14 bg-purple-800 flex items-center px-4 border-b border-purple-900">
+    <div class="flex-1 flex items-center max-w-3xl">
+      <input type="text" placeholder="Search..." class="w-full px-4 py-1.5 rounded bg-purple-700 text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500">
+      <button class="ml-2 px-4 py-1.5 bg-purple-600 rounded hover:bg-purple-500 text-white">Search</button>
+    </div>
+  </header>
+
+  {{!-- Main Content --}}
+  <div class="flex-1 flex overflow-hidden">
+    {{!-- Column 1: Workspace Strip --}}
+    <div class="w-16 bg-purple-900 flex flex-col items-center py-4">
+      <div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center text-white font-bold">
+        WS
+      </div>
+      <div class="mt-auto w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+        U
+      </div>
+    </div>
+
+    {{!-- Column 2: Channels & DMs --}}
+    <div class="w-60 bg-purple-800 text-white p-4 overflow-y-auto">
+      <div class="mb-6">
+        <h2 class="text-sm font-semibold text-purple-200 mb-2">Channels</h2>
+        <div class="space-y-1">
+          <div class="px-2 py-1 hover:bg-purple-700 rounded cursor-pointer"># development</div>
+          <div class="px-2 py-1 hover:bg-purple-700 rounded cursor-pointer"># gauntlet-ai</div>
+          <div class="px-2 py-1 hover:bg-purple-700 rounded cursor-pointer"># project-1</div>
+        </div>
+      </div>
+      <div>
+        <h2 class="text-sm font-semibold text-purple-200 mb-2">Direct Messages</h2>
+        <div class="space-y-1">
+          <div class="px-2 py-1 hover:bg-purple-700 rounded cursor-pointer flex items-center">
+            <div class="w-4 h-4 bg-green-500 rounded-full mr-2"></div>
+            Austen Allred
+          </div>
+          <div class="px-2 py-1 hover:bg-purple-700 rounded cursor-pointer flex items-center">
+            <div class="w-4 h-4 bg-green-500 rounded-full mr-2"></div>
+            Ashalesh Tilawat
+          </div>
+          <div class="px-2 py-1 hover:bg-purple-700 rounded cursor-pointer flex items-center">
+            <div class="w-4 h-4 bg-green-500 rounded-full mr-2"></div>
+            Devin Pigera
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Column 3: Messages --}}
+    <div class="flex-1 bg-white overflow-y-auto p-6">
+      <div class="space-y-6">
+        {{#each (array 1 2 3) as |message|}}
+          <div class="flex space-x-4">
+            <div class="w-10 h-10 bg-purple-200 rounded-full flex-shrink-0"></div>
+            <div class="flex-1">
+              <div class="flex items-baseline">
+                <span class="font-bold">John Doe</span>
+                <span class="ml-2 text-sm text-gray-400">11:30 AM</span>
+              </div>
+              <p class="mt-1">This is a sample message in our Slack-like interface.</p>
+              <div class="mt-2 flex items-center space-x-4">
+                <button class="text-gray-400 hover:text-red-500">❤️</button>
+                <button class="text-sm text-purple-600 hover:underline">3 replies</button>
+              </div>
+            </div>
+          </div>
+        {{/each}}
+      </div>
+    </div>
+
+    {{!-- Column 4: Thread View --}}
+    <div class="w-96 border-l border-gray-200 bg-gray-50 p-6">
+      <h2 class="font-bold mb-6">Thread</h2>
+      
+      {{!-- Original Message --}}
+      <div class="flex space-x-4 mb-6">
+        <div class="w-10 h-10 bg-purple-200 rounded-full flex-shrink-0"></div>
+        <div class="flex-1">
+          <div class="flex items-baseline">
+            <span class="font-bold">John Doe</span>
+            <span class="ml-2 text-sm text-gray-400">11:30 AM</span>
+          </div>
+          <p class="mt-1">This is the original message that started the thread.</p>
+        </div>
+      </div>
+
+      <div class="text-sm text-gray-500 mb-4">3 replies</div>
+
+      {{!-- Reply Messages --}}
+      <div class="space-y-4">
+        {{#each (array 1 2 3) as |reply|}}
+          <div class="flex space-x-4">
+            <div class="w-8 h-8 bg-purple-200 rounded-full flex-shrink-0"></div>
+            <div class="flex-1">
+              <div class="flex items-baseline">
+                <span class="font-bold">Reply User</span>
+                <span class="ml-2 text-sm text-gray-400">11:35 AM</span>
+              </div>
+              <p class="mt-1 text-sm">This is a reply to the original message.</p>
+            </div>
+          </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
 </div>
 
