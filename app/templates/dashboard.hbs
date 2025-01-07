@@ -58,7 +58,10 @@
                   <h3 class="text-base font-semibold text-gray-500 mb-2">Users</h3>
                   <div class="space-y-1">
                     {{#each this.search.userResults as |user|}}
-                      <div class="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded-lg cursor-pointer">
+                      <div 
+                        class="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded-lg cursor-pointer"
+                        {{on "click" (fn this.selectSearchResult user)}}
+                      >
                         <div class="w-8 h-8 bg-purple-200 rounded-full flex items-center justify-center text-purple-700 text-xs">
                           {{user.avatar}}
                         </div>
@@ -78,7 +81,10 @@
                   <h3 class="text-base font-semibold text-gray-500 mb-2">Messages</h3>
                   <div class="space-y-3">
                     {{#each this.search.messageResults as |message|}}
-                      <div class="p-2 hover:bg-gray-100 rounded-lg cursor-pointer">
+                      <div 
+                        class="p-2 hover:bg-gray-100 rounded-lg cursor-pointer"
+                        {{on "click" (fn this.selectSearchResult message)}}
+                      >
                         <div class="flex items-center space-x-3 mb-1">
                           <div class="w-8 h-8 bg-purple-200 rounded-full flex items-center justify-center text-purple-700 text-xs">
                             {{message.user.avatar}}
@@ -400,3 +406,59 @@
   class="hidden"
   {{on "change" this.handleFileUpload}}
 >
+
+{{#if this.selectedSearchResult}}
+  <div class="absolute top-[72px] left-[72px] right-0 bottom-0 bg-white z-50">
+    <div class="h-full relative">
+      {{!-- Header --}}
+      <div class="flex justify-between items-center p-6 border-b border-gray-200">
+        <h2 class="text-base font-semibold text-gray-900">
+          {{if (eq this.selectedSearchResult.content undefined) "User Details" "Message Details"}}
+        </h2>
+        <button 
+          class="text-gray-400 hover:text-gray-600 p-2"
+          {{on "click" this.closeFullScreenPopup}}
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      {{!-- Content --}}
+      <div class="flex h-[calc(100%-73px)]">
+        {{!-- Left Column (25%) --}}
+        <div class="w-1/4 p-6 border-r-4 border-gray-200">
+          {{#if (eq this.selectedSearchResult.content undefined)}}
+            {{!-- User Result --}}
+            <div class="flex items-center space-x-3 p-2 bg-gray-100 rounded-lg cursor-pointer">
+              <div class="w-8 h-8 bg-purple-200 rounded-full flex items-center justify-center text-purple-700 text-xs">
+                {{this.selectedSearchResult.avatar}}
+              </div>
+              <span class="text-base text-gray-900">{{this.selectedSearchResult.name}}</span>
+            </div>
+          {{else}}
+            {{!-- Message Result --}}
+            <div class="p-2 bg-gray-100 rounded-lg cursor-pointer">
+              <div class="flex items-center space-x-3 mb-1">
+                <div class="w-8 h-8 bg-purple-200 rounded-full flex items-center justify-center text-purple-700 text-xs">
+                  {{this.selectedSearchResult.user.avatar}}
+                </div>
+                <span class="text-base font-medium text-gray-900">{{this.selectedSearchResult.user.name}}</span>
+              </div>
+              <div class="ml-11">
+                <span class="text-base text-gray-500">{{this.selectedSearchResult.timestamp}}</span>
+                <p class="text-base text-gray-900 mt-2">{{this.selectedSearchResult.content}}</p>
+              </div>
+            </div>
+          {{/if}}
+        </div>
+
+        {{!-- Right Column (75%) --}}
+        <div class="flex-1 p-6">
+          <p class="text-base text-gray-500">Search results for detailed view goes here...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+{{/if}}

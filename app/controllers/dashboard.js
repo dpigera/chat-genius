@@ -23,6 +23,7 @@ export default class DashboardController extends Controller {
   @tracked isMessageEmojiPickerVisible = false;
   @tracked searchText = '';
   @tracked isSearchPopupVisible = false;
+  @tracked selectedSearchResult = null;
 
   init() {
     super.init(...arguments);
@@ -219,12 +220,17 @@ export default class DashboardController extends Controller {
   }
 
   @action
-  async updateSearchText(event) {
+  updateSearchText(event) {
     this.searchText = event.target.value;
+    
+    if (this.selectedSearchResult) {
+      this.selectedSearchResult = null;
+    }
+    
     this.isSearchPopupVisible = this.searchText.length > 0;
     
     if (this.searchText.length > 0) {
-      await this.search.search(this.searchText);
+      this.search.search(this.searchText);
     }
   }
 
@@ -232,10 +238,27 @@ export default class DashboardController extends Controller {
   clearSearch() {
     this.searchText = '';
     this.isSearchPopupVisible = false;
+    this.selectedSearchResult = null;
   }
 
   @action
   focusSearch() {
+    if (this.selectedSearchResult) {
+      this.selectedSearchResult = null;
+    }
     this.isSearchPopupVisible = this.searchText.length > 0;
+  }
+
+  @action
+  selectSearchResult(result) {
+    this.selectedSearchResult = result;
+    this.isSearchPopupVisible = false;
+  }
+
+  @action
+  closeFullScreenPopup() {
+    this.selectedSearchResult = null;
+    this.searchText = '';
+    this.isSearchPopupVisible = false;
   }
 } 
