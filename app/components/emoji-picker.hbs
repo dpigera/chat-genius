@@ -1,0 +1,25 @@
+<div class="absolute bottom-16 left-50 bg-white border border-gray-200 rounded-lg shadow-lg p-4 w-64">
+  <div class="flex justify-between items-center mb-3">
+    <h3 class="font-bold text-gray-700">Emojis</h3>
+    <button 
+      class="text-gray-400 hover:text-gray-600 transition-colors"
+      {{on "click" this.close}}
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+  
+  <div class="grid grid-cols-3 gap-2">
+    {{#each this.emojis as |emoji|}}
+      <button 
+        class="p-3 text-2xl hover:bg-gray-100 rounded-lg transition-colors duration-150"
+        {{on "click" (fn this.selectEmoji emoji.symbol)}}
+        title={{emoji.name}}
+      >
+        {{emoji.symbol}}
+      </button>
+    {{/each}}
+  </div>
+</div> 

@@ -18,6 +18,7 @@ export default class DashboardController extends Controller {
   @tracked userStatus = 'active';
   @tracked messageText = '';
   @tracked replyText = '';
+  @tracked isMessageEmojiPickerVisible = false;
 
   init() {
     super.init(...arguments);
@@ -97,6 +98,12 @@ export default class DashboardController extends Controller {
   @action
   updateMessageText(event) {
     this.messageText = event.target.value;
+  }
+
+  @action
+  addEmojiToMessage(emoji) {
+    this.messageText = `${this.messageText}${emoji}`;
+    this.isMessageEmojiPickerVisible = false;
   }
 
   @action
