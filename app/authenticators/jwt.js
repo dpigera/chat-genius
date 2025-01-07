@@ -8,7 +8,6 @@ export default class JWTAuthenticator extends Base {
   async authenticate(credentials) {
     try {
       const authData = await this.pocketbase.client.collection('users').authWithPassword(credentials.email, credentials.password);
-
       this.pocketbase.currentUser = authData.record;
       
       return {
