@@ -189,7 +189,7 @@
           
           {{#if this.selectedMessage}}
             <div class="flex-1 overflow-y-auto">
-              {{!-- Original message with consistent padding --}}
+              {{!-- Original message with padding --}}
               <div class="p-5">
                 <div class="flex space-x-4">
                   <div class="w-10 h-10 bg-purple-200 rounded-full flex-shrink-0 flex items-center justify-center">
@@ -233,11 +233,6 @@
                             <span class="ml-2 text-xs text-gray-400">{{reply.timestamp}}</span>
                           </div>
                           <p class="mt-1 text-sm">{{reply.content}}</p>
-                          {{#if reply.reactionCount}}
-                            <div class="mt-2">
-                              <span class="text-xs text-gray-400">❤️ {{reply.reactionCount}}</span>
-                            </div>
-                          {{/if}}
                         </div>
                       </div>
                     {{/each}}
