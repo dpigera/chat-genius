@@ -126,8 +126,8 @@
     {{#if this.isThreadVisible}}
       <div class="w-80 border-l-4 border-gray-200 bg-gray-50">
         <div class="h-full flex flex-col">
-          <div class="p-4 border-b border-gray-200 flex justify-between items-center">
-            <h3 class="font-medium">Thread</h3>
+          <div class="px-4 py-5 border-b border-gray-200 flex justify-between items-center">
+            <h3 class="text-lg font-bold">Thread</h3>
             <button 
               class="text-gray-400 hover:text-gray-600"
               {{on "click" this.closeThread}}
@@ -140,8 +140,8 @@
           
           {{#if this.selectedMessage}}
             <div class="flex-1 overflow-y-auto">
-              {{!-- Original message with padding --}}
-              <div class="p-4 mb-6">
+              {{!-- Original message with consistent padding --}}
+              <div class="p-5">
                 <div class="flex space-x-4">
                   <div class="w-10 h-10 bg-purple-200 rounded-full flex-shrink-0 flex items-center justify-center">
                     {{this.selectedMessage.user.avatar}}
@@ -156,10 +156,8 @@
                 </div>
               </div>
               
-              {{!-- Full-width thick separator --}}
               <div class="border-b-4 border-gray-200"></div>
               
-              {{!-- Replies section with padding --}}
               <div class="p-4">
                 {{#if this.isLoadingReplies}}
                   <div class="space-y-4">
