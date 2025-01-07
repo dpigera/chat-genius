@@ -20,6 +20,8 @@ export default class DashboardController extends Controller {
   @tracked messageText = '';
   @tracked replyText = '';
   @tracked isMessageEmojiPickerVisible = false;
+  @tracked searchText = '';
+  @tracked isSearchPopupVisible = false;
 
   init() {
     super.init(...arguments);
@@ -213,5 +215,22 @@ export default class DashboardController extends Controller {
     } catch (error) {
       console.error('Error posting reply:', error);
     }
+  }
+
+  @action
+  updateSearchText(event) {
+    this.searchText = event.target.value;
+    this.isSearchPopupVisible = this.searchText.length > 0;
+  }
+
+  @action
+  clearSearch() {
+    this.searchText = '';
+    this.isSearchPopupVisible = false;
+  }
+
+  @action
+  focusSearch() {
+    this.isSearchPopupVisible = this.searchText.length > 0;
   }
 } 
