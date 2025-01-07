@@ -21,11 +21,57 @@ export default function (config) {
 }
 
 function routes() {
-  // Store generated messages for both channels and DMs
   const channelMessages = new Map();
   const dmMessages = new Map();
+  const messageReplies = new Map();
+  let messageIdCounter = 1; // Global counter for unique message IDs
 
-  // Helper function to generate random messages
+  function generateUniqueId() {
+    return String(messageIdCounter++);
+  }
+
+  function generateReplies(count, parentMessage) {
+    const replies = [];
+    const users = [
+      { id: '1', name: 'Austen Allred', avatar: 'AA' },
+      { id: '2', name: 'Ashalesh Tilawat', avatar: 'AT' },
+      { id: '3', name: 'Devin Pigera', avatar: 'DP' },
+      { id: '4', name: 'Emma Wilson', avatar: 'EW' },
+      { id: '5', name: 'David Park', avatar: 'DP' }
+    ];
+
+    const replyTemplates = [
+      `Agreed, especially regarding ${parentMessage.content.split(' ').slice(0, 3).join(' ')}...`,
+      "Good point! Let me follow up on this.",
+      "I can help with this.",
+      "Thanks for bringing this up.",
+      "Here's what I found out about this...",
+      "I've been working on something similar.",
+      "Let me check and get back to you.",
+      "This is exactly what we needed.",
+      "Can you provide more details?",
+      "I'll schedule a follow-up meeting about this."
+    ];
+
+    const baseTime = new Date(parentMessage.rawTimestamp || new Date());
+
+    for (let i = 0; i < count; i++) {
+      const user = users[Math.floor(Math.random() * users.length)];
+      const messageTime = new Date(baseTime.getTime() + (i + 1) * 1000 * 60 * 5); // 5 minutes after previous
+
+      replies.push({
+        id: generateUniqueId(),
+        user: user,
+        content: replyTemplates[Math.floor(Math.random() * replyTemplates.length)],
+        timestamp: messageTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
+        rawTimestamp: messageTime,
+        reactionCount: Math.floor(Math.random() * 3)
+      });
+    }
+
+    return replies;
+  }
+
   function generateMessages(count, isDM = false, userId = null) {
     const users = [
       { id: '1', name: 'Austen Allred', avatar: 'AA' },
@@ -74,46 +120,59 @@ function routes() {
     const baseTime = new Date();
 
     if (isDM && userId) {
-      // Find the selected user for the DM
+      // DM messages logic
       const selectedUser = users.find(u => u.id === userId);
       
-      // Generate alternating conversation between the two users
       for (let i = 0; i < count; i++) {
         const isCurrentUser = i % 2 === 0;
         const user = isCurrentUser ? currentUser : selectedUser;
-        const messageTime = new Date(baseTime - i * 1000 * 60 * getRandomNumber(5, 30));
+        const messageTime = new Date(baseTime - i * 1000 * 60 * Math.floor(Math.random() * 26 + 5));
         
-        messages.push({
-          id: String(i + 1),
+        const messageId = generateUniqueId();
+        const replyCount = Math.floor(Math.random() * 6) + 1; // 1-6 replies
+
+        const message = {
+          id: messageId,
           user: user,
           content: isCurrentUser ? 
             getRandomItem(dmMessageTemplates.response) :
             getRandomItem(dmMessageTemplates.startup),
           timestamp: messageTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
-          reactionCount: getRandomNumber(0, 3),
-          replyCount: 0 // DMs typically don't have threaded replies
-        });
+          rawTimestamp: messageTime,
+          reactionCount: Math.floor(Math.random() * 3),
+          replyCount: replyCount
+        };
+
+        // Generate and store replies for this message
+        messageReplies.set(messageId, generateReplies(replyCount, message));
+        messages.push(message);
       }
     } else {
-      // Regular channel messages (existing logic)
+      // Channel messages logic
       for (let i = 0; i < count; i++) {
         const user = getRandomItem(users);
-        const messageTime = new Date(baseTime - i * 1000 * 60 * getRandomNumber(5, 30));
+        const messageTime = new Date(baseTime - i * 1000 * 60 * Math.floor(Math.random() * 26 + 5));
         
-        messages.push({
-          id: String(i + 1),
+        const messageId = generateUniqueId();
+        const replyCount = Math.floor(Math.random() * 8) + 1; // 1-8 replies
+
+        const message = {
+          id: messageId,
           user: user,
           content: getRandomItem(dmMessageTemplates.startup),
           timestamp: messageTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
-          reactionCount: getRandomNumber(0, 5),
-          replyCount: getRandomNumber(0, 8)
-        });
+          rawTimestamp: messageTime,
+          reactionCount: Math.floor(Math.random() * 5),
+          replyCount: replyCount
+        };
+
+        // Generate and store replies for this message
+        messageReplies.set(messageId, generateReplies(replyCount, message));
+        messages.push(message);
       }
     }
 
-    return messages.sort((a, b) => 
-      new Date(b.timestamp) - new Date(a.timestamp)
-    );
+    return messages.sort((a, b) => b.rawTimestamp - a.rawTimestamp);
   }
 
   // Authentication endpoint
@@ -189,6 +248,16 @@ function routes() {
     
     return {
       messages: dmMessages.get(userId)
+    };
+  });
+
+  // New endpoint for message replies
+  this.get('/api/messages/:messageId/replies', (schema, request) => {
+    const messageId = request.params.messageId;
+    const replies = messageReplies.get(messageId) || [];
+    
+    return {
+      replies: replies
     };
   });
 

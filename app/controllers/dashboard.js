@@ -9,6 +9,8 @@ export default class DashboardController extends Controller {
   @tracked messages = [];
   @tracked isThreadVisible = false;
   @tracked selectedMessage = null;
+  @tracked replies = [];
+  @tracked isLoadingReplies = false;
 
   init() {
     super.init(...arguments);
@@ -52,9 +54,21 @@ export default class DashboardController extends Controller {
   }
 
   @action
-  showThread(message) {
+  async showThread(message) {
     this.selectedMessage = message;
     this.isThreadVisible = true;
+    this.isLoadingReplies = true;
+    
+    try {
+      const response = await fetch(`/api/messages/${message.id}/replies`);
+      const data = await response.json();
+      this.replies = data.replies;
+    } catch (error) {
+      console.error('Error loading replies:', error);
+      this.replies = [];
+    } finally {
+      this.isLoadingReplies = false;
+    }
   }
 
   @action
