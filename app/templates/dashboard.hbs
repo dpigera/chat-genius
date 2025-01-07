@@ -43,8 +43,50 @@
               </svg>
             </button>
           </div>
-          <div class="p-4 h-[300px] overflow-y-auto">
-            <p class="text-gray-600">This is a search result...</p>
+          <div class="p-4 h-[420px] overflow-y-auto">
+            {{#if this.search.userResults.length}}
+              <div class="mb-4">
+                <h3 class="text-sm font-semibold text-gray-500 mb-2">Users</h3>
+                <div class="space-y-2">
+                  {{#each this.search.userResults as |user|}}
+                    <div class="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded-lg cursor-pointer">
+                      <div class="w-8 h-8 bg-purple-200 rounded-full flex items-center justify-center text-purple-700 text-sm">
+                        {{user.avatar}}
+                      </div>
+                      <span class="text-gray-900">{{user.name}}</span>
+                    </div>
+                  {{/each}}
+                </div>
+              </div>
+              
+              {{#if this.search.messageResults.length}}
+                <div class="border-b-4 border-gray-200 -mx-4"></div>
+              {{/if}}
+            {{/if}}
+
+            {{#if this.search.messageResults.length}}
+              <div class="mt-4">
+                <h3 class="text-sm font-semibold text-gray-500 mb-2">Messages</h3>
+                <div class="space-y-3">
+                  {{#each this.search.messageResults as |message|}}
+                    <div class="p-2 hover:bg-gray-100 rounded-lg cursor-pointer">
+                      <div class="flex items-center space-x-2 mb-1">
+                        <div class="w-6 h-6 bg-purple-200 rounded-full flex items-center justify-center text-purple-700 text-xs">
+                          {{message.user.avatar}}
+                        </div>
+                        <span class="text-sm font-medium text-gray-900">{{message.user.name}}</span>
+                        <span class="text-sm text-gray-500">{{message.timestamp}}</span>
+                      </div>
+                      <p class="text-sm text-gray-600 ml-8">{{message.content}}</p>
+                    </div>
+                  {{/each}}
+                </div>
+              </div>
+            {{/if}}
+
+            {{#unless (or this.search.userResults.length this.search.messageResults.length)}}
+              <p class="text-gray-500 text-center">No results found</p>
+            {{/unless}}
           </div>
         </div>
       {{/if}}

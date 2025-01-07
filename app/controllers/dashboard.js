@@ -7,6 +7,7 @@ export default class DashboardController extends Controller {
   @service router;
   @service session;
   @service s3Upload;
+  @service search;
 
   @tracked isProfileOpen = false;
   @tracked selectedChannelId = null;
@@ -218,9 +219,13 @@ export default class DashboardController extends Controller {
   }
 
   @action
-  updateSearchText(event) {
+  async updateSearchText(event) {
     this.searchText = event.target.value;
     this.isSearchPopupVisible = this.searchText.length > 0;
+    
+    if (this.searchText.length > 0) {
+      await this.search.search(this.searchText);
+    }
   }
 
   @action
