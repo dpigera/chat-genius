@@ -108,10 +108,54 @@ export default class DashboardController extends Controller {
   }
 
   @action
+  scrollToBottom() {
+    const messageContainer = document.querySelector('.messages-container');
+    if (messageContainer) {
+      messageContainer.scrollTop = messageContainer.scrollHeight;
+    }
+  }
+
+  @action
+  async handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+      const { url, fileName, fileEmoji } = await this.s3Upload.uploadFile(file);
+
+      const newMessage = {
+        id: String(Date.now()),
+        content: `${fileEmoji} File uploaded: ${fileName}`,
+        fileInfo: {
+          name: fileName,
+          url: url
+        },
+        user: {
+          id: '3',
+          name: 'Devin Pigera',
+          avatar: 'DP'
+        },
+        timestamp: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
+        replyCount: 0,
+        reactionCount: 0
+      };
+
+      this.messages = [...this.messages, newMessage];
+      event.target.value = '';
+      
+      // Scroll to bottom after adding new message
+      setTimeout(() => this.scrollToBottom(), 0);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
+  }
+
+  @action
   async postMessage() {
     if (!this.messageText.trim()) return;
 
     const newMessage = {
+      id: String(Date.now()),
       content: this.messageText,
       user: {
         id: '3',
@@ -119,35 +163,15 @@ export default class DashboardController extends Controller {
         avatar: 'DP'
       },
       timestamp: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
-      reactionCount: 0,
-      replyCount: 0
+      replyCount: 0,
+      reactionCount: 0
     };
 
-    if (this.selectedChannelId) {
-      // Post to channel
-      await fetch(`/api/channels/${this.selectedChannelId}/messages`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newMessage)
-      });
-    } else if (this.selectedUserId) {
-      // Post to DM
-      await fetch(`/api/directmsgs/${this.selectedUserId}/messages`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newMessage)
-      });
-    }
-
-    // Add to current messages list
     this.messages = [...this.messages, newMessage];
-    
-    // Clear input
     this.messageText = '';
+    
+    // Scroll to bottom after adding new message
+    setTimeout(() => this.scrollToBottom(), 0);
   }
 
   @action
@@ -188,43 +212,6 @@ export default class DashboardController extends Controller {
       this.replyText = '';
     } catch (error) {
       console.error('Error posting reply:', error);
-    }
-  }
-
-  @action
-  async handleFileUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    try {
-      // Upload file to S3
-      const { url, fileName, fileEmoji } = await this.s3Upload.uploadFile(file);
-
-      // Create new message object
-      const newMessage = {
-        id: String(Date.now()),
-        content: `${fileEmoji} File uploaded: ${fileName}`,
-        fileInfo: {
-          name: fileName,
-          url: url
-        },
-        user: {
-          id: '3',
-          name: 'Devin Pigera',
-          avatar: 'DP'
-        },
-        timestamp: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
-        replyCount: 0,
-        reactionCount: 0
-      };
-
-      // Add message to messages list
-      this.messages = [...this.messages, newMessage];
-
-      // Clear the file input
-      event.target.value = '';
-    } catch (error) {
-      console.error('Error uploading file:', error);
     }
   }
 } 

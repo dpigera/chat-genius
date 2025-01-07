@@ -84,8 +84,7 @@
 
     {{!-- Messages Column --}}
     <div class="flex-1 bg-white flex flex-col">
-      {{!-- Messages List with Scroll --}}
-      <div class="flex-1 overflow-y-auto p-6">
+      <div class="flex-1 overflow-y-auto p-6 messages-container">
         <div class="space-y-6">
           {{#if this.messages}}
             {{#each this.messages as |message|}}
