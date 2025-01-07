@@ -46,7 +46,7 @@ export default class DashboardController extends Controller {
       const messages = await this.pocketbase.client.collection('messages').getFullList({
         expand: 'user',
         filter,
-        sort: '-created',
+        sort: 'created',
       });
       this.messages = messages;
     } catch (error) {
@@ -163,20 +163,22 @@ export default class DashboardController extends Controller {
   async postMessage() {
     if (!this.messageText.trim()) return;
 
+    // const data = {
+    //   text,           // Text of the message
+    //   user: userId,   // User relation (single)
+    //   channel: channelId, // Channel relation (single)
+    // };
+
+    // const createdMessage = await pb.collection('messages').create(data);
+
     const newMessage = {
-      id: String(Date.now()),
-      content: this.messageText,
-      user: {
-        id: '3',
-        name: 'Devin Pigera',
-        avatar: 'DP'
-      },
-      timestamp: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
-      replyCount: 0,
-      reactionCount: 0
+      body: this.messageText,
+      user: this.pocketbase.currentUser.id,
+      channel: this.selectedChannelId
     };
 
-    this.messages = [...this.messages, newMessage];
+    await this.pocketbase.client.collection('messages').create(newMessage);
+    await this.selectChannel(this.selectedChannelId);
     this.messageText = '';
     
     // Scroll to bottom after adding new message
