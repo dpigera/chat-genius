@@ -7,6 +7,8 @@ export default class DashboardController extends Controller {
   @tracked selectedChannelId = null;
   @tracked selectedUserId = null;
   @tracked messages = [];
+  @tracked isThreadVisible = false;
+  @tracked selectedMessage = null;
 
   init() {
     super.init(...arguments);
@@ -20,7 +22,8 @@ export default class DashboardController extends Controller {
   @action
   async selectChannel(channelId) {
     this.selectedChannelId = channelId;
-    this.selectedUserId = null; // Clear DM selection
+    this.selectedUserId = null;
+    this.isThreadVisible = false; // Hide thread when changing channels
     
     try {
       const response = await fetch(`/api/channels/${channelId}/messages`);
@@ -35,7 +38,8 @@ export default class DashboardController extends Controller {
   @action
   async selectUser(userId) {
     this.selectedUserId = userId;
-    this.selectedChannelId = null; // Clear channel selection
+    this.selectedChannelId = null;
+    this.isThreadVisible = false; // Hide thread when changing DMs
     
     try {
       const response = await fetch(`/api/directmsgs/${userId}/messages`);
@@ -45,5 +49,17 @@ export default class DashboardController extends Controller {
       console.error('Error loading messages:', error);
       this.messages = [];
     }
+  }
+
+  @action
+  showThread(message) {
+    this.selectedMessage = message;
+    this.isThreadVisible = true;
+  }
+
+  @action
+  closeThread() {
+    this.isThreadVisible = false;
+    this.selectedMessage = null;
   }
 } 
