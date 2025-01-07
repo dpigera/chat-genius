@@ -8,6 +8,7 @@ export default class DashboardController extends Controller {
   @service session;
   @service s3Upload;
   @service search;
+  @service pocketbase;
 
   @tracked isProfileOpen = false;
   @tracked selectedChannelId = null;

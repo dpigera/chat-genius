@@ -121,10 +121,12 @@
         {{on "click" (fn (mut this.isProfileOpen) (not this.isProfileOpen))}}
         {{!-- {{on "mousedown" (fn (mut this.isProfileOpen) (not this.isProfileOpen))}} --}}
       >
-        DP
+        {{this.pocketbase.initials}}
       </button>
 
       <UserProfilePopup 
+        @initials={{this.pocketbase.initials}}
+        @user={{this.pocketbase.currentUser}}
         @isOpen={{this.isProfileOpen}} 
         @onClose={{fn (mut this.isProfileOpen) false}}
         @userStatus={{this.userStatus}}
