@@ -261,6 +261,42 @@ function routes() {
     };
   });
 
+  // POST endpoint for channel messages
+  this.post('/api/channels/:channelId/messages', (schema, request) => {
+    const channelId = request.params.channelId;
+    const newMessage = JSON.parse(request.requestBody);
+    
+    // Get existing messages or initialize new array
+    const existingMessages = channelMessages.get(channelId) || [];
+    
+    // Add new message with unique ID
+    newMessage.id = String(messageIdCounter++);
+    existingMessages.push(newMessage);
+    
+    // Update stored messages
+    channelMessages.set(channelId, existingMessages);
+    
+    return newMessage;
+  });
+
+  // POST endpoint for DM messages
+  this.post('/api/directmsgs/:userId/messages', (schema, request) => {
+    const userId = request.params.userId;
+    const newMessage = JSON.parse(request.requestBody);
+    
+    // Get existing messages or initialize new array
+    const existingMessages = dmMessages.get(userId) || [];
+    
+    // Add new message with unique ID
+    newMessage.id = String(messageIdCounter++);
+    existingMessages.push(newMessage);
+    
+    // Update stored messages
+    dmMessages.set(userId, existingMessages);
+    
+    return newMessage;
+  });
+
   // Allow other endpoints to pass through
   this.passthrough();
 }

@@ -102,8 +102,42 @@ export default class DashboardController extends Controller {
   async postMessage() {
     if (!this.messageText.trim()) return;
 
-    // TODO: Implement message posting
-    console.log('Posting message:', this.messageText);
+    const newMessage = {
+      content: this.messageText,
+      user: {
+        id: '3',
+        name: 'Devin Pigera',
+        avatar: 'DP'
+      },
+      timestamp: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
+      reactionCount: 0,
+      replyCount: 0
+    };
+
+    if (this.selectedChannelId) {
+      // Post to channel
+      await fetch(`/api/channels/${this.selectedChannelId}/messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newMessage)
+      });
+    } else if (this.selectedUserId) {
+      // Post to DM
+      await fetch(`/api/directmsgs/${this.selectedUserId}/messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newMessage)
+      });
+    }
+
+    // Add to current messages list
+    this.messages = [...this.messages, newMessage];
+    
+    // Clear input
     this.messageText = '';
   }
 } 
