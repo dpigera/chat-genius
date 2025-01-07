@@ -44,49 +44,59 @@
             </button>
           </div>
           <div class="p-4 h-[420px] overflow-y-auto">
-            {{#if this.search.userResults.length}}
-              <div class="mb-4">
-                <h3 class="text-base font-semibold text-gray-500 mb-2">Users</h3>
-                <div class="space-y-1">
-                  {{#each this.search.userResults as |user|}}
-                    <div class="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded-lg cursor-pointer">
-                      <div class="w-8 h-8 bg-purple-200 rounded-full flex items-center justify-center text-purple-700 text-xs">
-                        {{user.avatar}}
-                      </div>
-                      <span class="text-base text-gray-900">{{user.name}}</span>
-                    </div>
-                  {{/each}}
-                </div>
+            {{#if this.search.isLoading}}
+              <div class="flex items-center justify-center h-full text-gray-500">
+                <svg class="animate-spin h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Searching...
               </div>
-              
-              {{#if this.search.messageResults.length}}
-                <div class="border-b-4 border-gray-200 -mx-4"></div>
-              {{/if}}
-            {{/if}}
-
-            {{#if this.search.messageResults.length}}
-              <div class="mt-4">
-                <h3 class="text-base font-semibold text-gray-500 mb-2">Messages</h3>
-                <div class="space-y-3">
-                  {{#each this.search.messageResults as |message|}}
-                    <div class="p-2 hover:bg-gray-100 rounded-lg cursor-pointer">
-                      <div class="flex items-center space-x-2 mb-1">
-                        <div class="w-6 h-6 bg-purple-200 rounded-full flex items-center justify-center text-purple-700 text-xs">
-                          {{message.user.avatar}}
+            {{else}}
+              {{#if this.search.userResults.length}}
+                <div class="mb-4">
+                  <h3 class="text-base font-semibold text-gray-500 mb-2">Users</h3>
+                  <div class="space-y-1">
+                    {{#each this.search.userResults as |user|}}
+                      <div class="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded-lg cursor-pointer">
+                        <div class="w-8 h-8 bg-purple-200 rounded-full flex items-center justify-center text-purple-700 text-xs">
+                          {{user.avatar}}
                         </div>
-                        <span class="text-base font-medium text-gray-900">{{message.user.name}}</span>
-                        <span class="text-base text-gray-500">{{message.timestamp}}</span>
+                        <span class="text-base text-gray-900">{{user.name}}</span>
                       </div>
-                      <p class="text-base text-gray-600 ml-8">{{message.content}}</p>
-                    </div>
-                  {{/each}}
+                    {{/each}}
+                  </div>
                 </div>
-              </div>
-            {{/if}}
+                
+                {{#if this.search.messageResults.length}}
+                  <div class="border-b-4 border-gray-200 -mx-4"></div>
+                {{/if}}
+              {{/if}}
 
-            {{#unless (or this.search.userResults.length this.search.messageResults.length)}}
-              <p class="text-base text-gray-500 text-center">No results found</p>
-            {{/unless}}
+              {{#if this.search.messageResults.length}}
+                <div class="mt-4">
+                  <h3 class="text-base font-semibold text-gray-500 mb-2">Messages</h3>
+                  <div class="space-y-3">
+                    {{#each this.search.messageResults as |message|}}
+                      <div class="p-2 hover:bg-gray-100 rounded-lg cursor-pointer">
+                        <div class="flex items-center space-x-3 mb-1">
+                          <div class="w-8 h-8 bg-purple-200 rounded-full flex items-center justify-center text-purple-700 text-xs">
+                            {{message.user.avatar}}
+                          </div>
+                          <span class="text-base font-medium text-gray-900">{{message.user.name}}</span>
+                          <span class="text-base text-gray-500">{{message.timestamp}}</span>
+                        </div>
+                        <p class="text-base text-gray-600 ml-11">{{message.content}}</p>
+                      </div>
+                    {{/each}}
+                  </div>
+                </div>
+              {{/if}}
+
+              {{#unless (or this.search.userResults.length this.search.messageResults.length)}}
+                <p class="text-base text-gray-500 text-center">No results found</p>
+              {{/unless}}
+            {{/if}}
           </div>
         </div>
       {{/if}}
