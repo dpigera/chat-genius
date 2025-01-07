@@ -16,6 +16,7 @@ export default class DashboardController extends Controller {
   @tracked replies = [];
   @tracked isLoadingReplies = false;
   @tracked userStatus = 'active';
+  @tracked messageText = '';
 
   init() {
     super.init(...arguments);
@@ -90,5 +91,19 @@ export default class DashboardController extends Controller {
   @action
   async logout() {
     await this.session.invalidate();
+  }
+
+  @action
+  updateMessageText(event) {
+    this.messageText = event.target.value;
+  }
+
+  @action
+  async postMessage() {
+    if (!this.messageText.trim()) return;
+
+    // TODO: Implement message posting
+    console.log('Posting message:', this.messageText);
+    this.messageText = '';
   }
 } 
