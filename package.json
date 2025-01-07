@@ -92,6 +92,7 @@
     "edition": "octane"
   },
   "dependencies": {
-    "@ember/render-modifiers": "^2.1.0"
+    "@ember/render-modifiers": "^2.1.0",
+    "pocketbase": "^0.25.0"
   }
 }

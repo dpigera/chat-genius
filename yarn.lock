@@ -9700,6 +9700,11 @@ pkg-up@^3.1.0:
   dependencies:
     find-up "^3.0.0"
 
+pocketbase@^0.25.0:
+  version "0.25.0"
+  resolved "https://registry.npmjs.org/pocketbase/-/pocketbase-0.25.0.tgz"
+  integrity sha512-xbjiQG/tnh2HsjZrTW7ZEJASvl4hmGAB5PQAmNRkRU8BmrPib7zwKyXdiYJl34QN7ADpqykZD2lAMdDtrrQbuw==
+
 portfinder@^1.0.32:
   version "1.0.32"
   resolved "https://registry.npmjs.org/portfinder/-/portfinder-1.0.32.tgz"
