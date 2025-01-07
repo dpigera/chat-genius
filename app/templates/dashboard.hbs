@@ -194,28 +194,30 @@
             {{#each this.messages as |message|}}
               <div class="flex space-x-4">
                 <div class="w-10 h-10 bg-purple-200 rounded-full flex-shrink-0 flex items-center justify-center">
-                  {{message.user.avatar}}
+                  XX
                 </div>
                 <div class="flex-1">
                   <div class="flex items-baseline">
-                    <span class="font-bold">{{message.user.name}}</span>
-                    <span class="ml-2 text-sm text-gray-400">{{message.timestamp}}</span>
+                    <span class="font-bold">{{message.expand.user.name}}</span>
+                    <span class="ml-2 text-sm text-gray-400">{{message.created}}</span>
                   </div>
-                  <p class="mt-1">{{message.content}}</p>
+                  <p class="mt-1">{{message.body}}</p>
                   <div class="mt-1 flex items-center space-x-2">
-                    <button class="text-gray-400 hover:text-red-500">❤️</button>
+                    {{!-- <button class="text-gray-400 hover:text-red-500">❤️</button> --}}
                     <button 
                       class="text-sm {{if (eq this.selectedMessage.id message.id) 'text-purple-800 font-medium' 'text-purple-600'}} hover:underline"
                       {{on "click" (fn this.showThread message)}}
                     >
-                      {{message.replyCount}} replies
+                      {{message.replies.length}} replies
                     </button>
                   </div>
                 </div>
               </div>
             {{/each}}
           {{else}}
-            <div class="space-y-4">
+            <div>No messages found</div>
+            {{!-- no loading indicator --}}
+            {{!-- <div class="space-y-4">
               {{#each (array 1 2 3) as |placeholder|}}
                 <div class="animate-pulse flex space-x-4">
                   <div class="w-10 h-10 bg-gray-200 rounded-full"></div>
@@ -225,7 +227,7 @@
                   </div>
                 </div>
               {{/each}}
-            </div>
+            </div> --}}
           {{/if}}
         </div>
       </div>

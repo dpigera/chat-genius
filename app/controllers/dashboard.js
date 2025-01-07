@@ -42,9 +42,13 @@ export default class DashboardController extends Controller {
     this.isThreadVisible = false; // Hide thread when changing channels
     
     try {
-      const response = await fetch(`/api/channels/${channelId}/messages`);
-      const data = await response.json();
-      this.messages = data.messages;
+      const filter = `channel="${this.selectedChannelId}"`; 
+      const messages = await this.pocketbase.client.collection('messages').getFullList({
+        expand: 'user',
+        filter,
+        sort: '-created',
+      });
+      this.messages = messages;
     } catch (error) {
       console.error('Error loading messages:', error);
       this.messages = [];
