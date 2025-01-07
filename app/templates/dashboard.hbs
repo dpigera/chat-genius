@@ -36,7 +36,10 @@
         {{#if @model.channels}}
           <div class="space-y-1">
             {{#each @model.channels as |channel|}}
-              <div class="px-2 py-1 hover:bg-purple-700 rounded cursor-pointer">
+              <div 
+                class="px-2 py-1 rounded cursor-pointer {{if (eq channel.id this.selectedChannelId) 'bg-purple-700' 'hover:bg-purple-700'}}"
+                {{on "click" (fn this.selectChannel channel.id)}}
+              >
                 # {{channel.name}}
               </div>
             {{/each}}
@@ -76,22 +79,40 @@
     {{!-- Column 3: Messages --}}
     <div class="flex-1 bg-white overflow-y-auto p-6">
       <div class="space-y-6">
-        {{#each (array 1 2 3) as |message|}}
-          <div class="flex space-x-4">
-            <div class="w-10 h-10 bg-purple-200 rounded-full flex-shrink-0"></div>
-            <div class="flex-1">
-              <div class="flex items-baseline">
-                <span class="font-bold">John Doe</span>
-                <span class="ml-2 text-sm text-gray-400">11:30 AM</span>
+        {{#if this.messages}}
+          {{#each this.messages as |message|}}
+            <div class="flex space-x-4">
+              <div class="w-10 h-10 bg-purple-200 rounded-full flex-shrink-0 flex items-center justify-center">
+                {{message.user.avatar}}
               </div>
-              <p class="mt-1">This is a sample message in our Slack-like interface.</p>
-              <div class="mt-2 flex items-center space-x-4">
-                <button class="text-gray-400 hover:text-red-500">❤️</button>
-                <button class="text-sm text-purple-600 hover:underline">3 replies</button>
+              <div class="flex-1">
+                <div class="flex items-baseline">
+                  <span class="font-bold">{{message.user.name}}</span>
+                  <span class="ml-2 text-sm text-gray-400">{{message.timestamp}}</span>
+                </div>
+                <p class="mt-1">{{message.content}}</p>
+                <div class="mt-2 flex items-center space-x-4">
+                  <button class="text-gray-400 hover:text-red-500">❤️</button>
+                  <button class="text-sm text-purple-600 hover:underline">
+                    {{message.replyCount}} replies
+                  </button>
+                </div>
               </div>
             </div>
+          {{/each}}
+        {{else}}
+          <div class="space-y-4">
+            {{#each (array 1 2 3) as |placeholder|}}
+              <div class="animate-pulse flex space-x-4">
+                <div class="w-10 h-10 bg-gray-200 rounded-full"></div>
+                <div class="flex-1 space-y-2">
+                  <div class="h-2 bg-gray-200 rounded w-1/4"></div>
+                  <div class="h-2 bg-gray-200 rounded w-3/4"></div>
+                </div>
+              </div>
+            {{/each}}
           </div>
-        {{/each}}
+        {{/if}}
       </div>
     </div>
 
