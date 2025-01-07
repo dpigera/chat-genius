@@ -42,6 +42,8 @@ export default class DashboardController extends Controller {
     this.isThreadVisible = false; // Hide thread when changing channels
     
     try {
+
+
       const filter = `channel="${this.selectedChannelId}"`; 
       const messages = await this.pocketbase.client.collection('messages').getFullList({
         expand: 'user',
@@ -49,6 +51,24 @@ export default class DashboardController extends Controller {
         sort: 'created',
       });
       this.messages = messages;
+
+      // subscribe to new channel
+      try {
+        await this.pocketbase.client.collection('messages').subscribe('*', async (change) => {
+          if (change.action === 'create') {
+            console.log(change.record);
+            this.messages = [...this.messages, change.record];
+
+            // Scroll to bottom after adding new message
+            setTimeout(() => this.scrollToBottom(), 0);
+          }
+        });
+        console.log('sockets.live()');
+      } catch (error) {
+        console.error('Error subscribing to messages:', error);
+      }
+
+
     } catch (error) {
       console.error('Error loading messages:', error);
       this.messages = [];
