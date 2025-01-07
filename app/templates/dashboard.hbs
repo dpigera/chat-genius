@@ -59,7 +59,10 @@
         {{#if @model.directMessages}}
           <div class="space-y-1">
             {{#each @model.directMessages as |user|}}
-              <div class="px-2 py-1 hover:bg-purple-700 rounded cursor-pointer flex items-center">
+              <div 
+                class="px-2 py-1 rounded cursor-pointer {{if (eq user.id this.selectedUserId) 'bg-purple-700' 'hover:bg-purple-700'}} flex items-center"
+                {{on "click" (fn this.selectUser user.id)}}
+              >
                 <div class="w-4 h-4 bg-green-500 rounded-full mr-2"></div>
                 {{user.name}}
               </div>

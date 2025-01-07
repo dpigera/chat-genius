@@ -21,45 +21,46 @@ export default function (config) {
 }
 
 function routes() {
-  // Store generated messages for each channel
+  // Store generated messages for both channels and DMs
   const channelMessages = new Map();
+  const dmMessages = new Map();
 
   // Helper function to generate random messages
-  function generateMessages(count) {
+  function generateMessages(count, isDM = false, userId = null) {
     const users = [
-      { id: '1', name: 'Sarah Chen', avatar: 'SC' },
-      { id: '2', name: 'Mike Johnson', avatar: 'MJ' },
-      { id: '3', name: 'Alex Kumar', avatar: 'AK' },
-      { id: '4', name: 'Emma Wilson', avatar: 'EW' },
-      { id: '5', name: 'David Park', avatar: 'DP' }
+      { id: '1', name: 'Austen Allred', avatar: 'AA' },
+      { id: '2', name: 'Ashalesh Tilawat', avatar: 'AT' },
+      { id: '3', name: 'Devin Pigera', avatar: 'DP' }
     ];
 
-    const messageTemplates = [
-      // Development-focused messages
-      "Just pushed an update to the {feature} branch. CI is running 🤞",
-      "Anyone available for a quick code review on PR #{number}?",
-      "The {env} environment is down. Investigating now 🔍",
-      "Updated the documentation for the new API endpoints ✨",
-      "Heads up - deploying to staging in 10 minutes",
-      "Found a bug in the {feature} implementation. Created issue #{number}",
-      "All tests passing on the main branch 🎉",
-      "New performance improvements merged - seeing {number}% faster load times",
-      "Quick standup update: working on {feature} integration today",
-      "Can someone help me debug this {feature} issue?",
-      "Breaking change alert: updated the {feature} API contract",
-      "Added new unit tests for the {feature} component",
-      "Docker build is failing after the latest dependency update 😕",
-      "Great job on the code review feedback, all changes implemented!",
-      "Remember to update your .env files with the new config"
-    ];
+    const currentUser = { id: '3', name: 'Devin Pigera', avatar: 'DP' };
 
-    const features = [
-      'authentication', 'user management', 'dashboard', 'API', 
-      'database', 'caching', 'search', 'notification', 'payment',
-      'reporting', 'analytics', 'integration'
-    ];
-
-    const environments = ['staging', 'production', 'dev', 'QA'];
+    const dmMessageTemplates = {
+      startup: [
+        "Hey, quick question about the AI model deployment",
+        "How's the progress on the new feature?",
+        "Can we sync up about the roadmap?",
+        "Just reviewed the latest metrics",
+        "Thoughts on the new architecture?",
+        "Got time for a quick call?",
+        "Great work on the presentation yesterday",
+        "Should we schedule a planning session?",
+        "Have you seen the latest PR?",
+        "Updates from the team meeting:"
+      ],
+      response: [
+        "Let me take a look",
+        "Sure, I'm free in 30 mins",
+        "Good progress - just pushed some updates",
+        "Thanks! Let me know if you need anything else",
+        "Interesting approach - let's discuss",
+        "I'll set up a meeting",
+        "Can you share more context?",
+        "On it - will get back to you shortly",
+        "Makes sense to me",
+        "Let's sync up on this tomorrow"
+      ]
+    };
 
     function getRandomItem(array) {
       return array[Math.floor(Math.random() * array.length)];
@@ -69,31 +70,50 @@ function routes() {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    function formatMessage(template) {
-      return template
-        .replace('{feature}', getRandomItem(features))
-        .replace('{env}', getRandomItem(environments))
-        .replace('{number}', getRandomNumber(1, 100));
-    }
-
     const messages = [];
     const baseTime = new Date();
 
-    for (let i = 0; i < count; i++) {
-      const user = getRandomItem(users);
-      const messageTime = new Date(baseTime - i * 1000 * 60 * getRandomNumber(5, 30));
+    if (isDM && userId) {
+      // Find the selected user for the DM
+      const selectedUser = users.find(u => u.id === userId);
       
-      messages.push({
-        id: String(i + 1),
-        user: user,
-        content: formatMessage(getRandomItem(messageTemplates)),
-        timestamp: messageTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
-        reactionCount: getRandomNumber(0, 5),
-        replyCount: getRandomNumber(0, 8)
-      });
+      // Generate alternating conversation between the two users
+      for (let i = 0; i < count; i++) {
+        const isCurrentUser = i % 2 === 0;
+        const user = isCurrentUser ? currentUser : selectedUser;
+        const messageTime = new Date(baseTime - i * 1000 * 60 * getRandomNumber(5, 30));
+        
+        messages.push({
+          id: String(i + 1),
+          user: user,
+          content: isCurrentUser ? 
+            getRandomItem(dmMessageTemplates.response) :
+            getRandomItem(dmMessageTemplates.startup),
+          timestamp: messageTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
+          reactionCount: getRandomNumber(0, 3),
+          replyCount: 0 // DMs typically don't have threaded replies
+        });
+      }
+    } else {
+      // Regular channel messages (existing logic)
+      for (let i = 0; i < count; i++) {
+        const user = getRandomItem(users);
+        const messageTime = new Date(baseTime - i * 1000 * 60 * getRandomNumber(5, 30));
+        
+        messages.push({
+          id: String(i + 1),
+          user: user,
+          content: getRandomItem(dmMessageTemplates.startup),
+          timestamp: messageTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
+          reactionCount: getRandomNumber(0, 5),
+          replyCount: getRandomNumber(0, 8)
+        });
+      }
     }
 
-    return messages;
+    return messages.sort((a, b) => 
+      new Date(b.timestamp) - new Date(a.timestamp)
+    );
   }
 
   // Authentication endpoint
@@ -144,19 +164,31 @@ function routes() {
     };
   });
 
-  // Messages endpoint that persists messages per channel
+  // Channel messages endpoint
   this.get('/api/channels/:channelId/messages', (schema, request) => {
     const channelId = request.params.channelId;
     
-    // If we haven't generated messages for this channel yet, do so now
     if (!channelMessages.has(channelId)) {
-      const messageCount = Math.floor(Math.random() * 5) + 3; // Random between 3-7
+      const messageCount = Math.floor(Math.random() * 5) + 3;
       channelMessages.set(channelId, generateMessages(messageCount));
     }
     
-    // Return the stored messages for this channel
     return {
       messages: channelMessages.get(channelId)
+    };
+  });
+
+  // DM messages endpoint
+  this.get('/api/directmsgs/:userId/messages', (schema, request) => {
+    const userId = request.params.userId;
+    
+    if (!dmMessages.has(userId)) {
+      const messageCount = Math.floor(Math.random() * 5) + 3;
+      dmMessages.set(userId, generateMessages(messageCount, true, userId));
+    }
+    
+    return {
+      messages: dmMessages.get(userId)
     };
   });
 
