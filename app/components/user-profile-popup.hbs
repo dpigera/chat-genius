@@ -1,0 +1,39 @@
+{{#if @isOpen}}
+  <div class="fixed bottom-16 left-4 w-72 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
+    {{!-- Close button --}}
+    <button 
+      class="absolute top-2 right-2 text-gray-400 hover:text-gray-600" 
+      {{on "click" @onClose}}
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    {{!-- Section 1: User Profile --}}
+    <div class="p-4 border-b border-gray-200">
+      <div class="flex items-center">
+        <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center text-white font-medium">
+          DP
+        </div>
+        <div class="ml-3">
+          <div class="font-medium text-gray-900">Devin Pigera</div>
+          <div class="flex items-center text-sm text-gray-500">
+            <span class="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
+            Active
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Section 2: Sign Out --}}
+    <div class="p-2">
+      <button 
+        class="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-gray-100 rounded-md"
+        {{on "click" this.signOut}}
+      >
+        Sign Out
+      </button>
+    </div>
+  </div>
+{{/if}} 

@@ -10,13 +10,21 @@
   {{!-- Main Content --}}
   <div class="flex-1 flex overflow-hidden">
     {{!-- Column 1: Workspace Strip --}}
-    <div class="w-16 bg-purple-900 flex flex-col items-center py-4">
+    <div class="w-16 bg-purple-900 flex flex-col items-center py-4 relative">
       <div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center text-white font-bold">
         WS
       </div>
-      <div class="mt-auto w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-        U
-      </div>
+      <button 
+        class="mt-auto w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center hover:opacity-90"
+        {{on "click" (fn (mut this.isProfileOpen) (not this.isProfileOpen))}}
+      >
+        DP
+      </button>
+
+      <UserProfilePopup 
+        @isOpen={{this.isProfileOpen}} 
+        @onClose={{fn (mut this.isProfileOpen) false}}
+      />
     </div>
 
     {{!-- Column 2: Channels & DMs --}}
