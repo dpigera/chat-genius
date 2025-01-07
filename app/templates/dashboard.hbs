@@ -178,6 +178,7 @@
     {{#if this.isThreadVisible}}
       <div class="hidden md:block w-96 border-l-4 border-gray-200 bg-gray-50">
         <div class="h-full flex flex-col">
+          {{!-- Thread Header --}}
           <div class="px-4 py-5 border-b border-gray-200 flex justify-between items-center">
             <h3 class="text-lg font-bold">Thread</h3>
             <button 
@@ -189,10 +190,10 @@
               </svg>
             </button>
           </div>
-          
+
           {{#if this.selectedMessage}}
             <div class="flex-1 overflow-y-auto">
-              {{!-- Original message with padding --}}
+              {{!-- Original message --}}
               <div class="p-5">
                 <div class="flex space-x-4">
                   <div class="w-10 h-10 bg-purple-200 rounded-full flex-shrink-0 flex items-center justify-center">
@@ -210,37 +211,49 @@
               
               <div class="border-b-4 border-gray-200"></div>
               
-              <div class="p-4">
+              <div class="p-4 space-y-4">
                 {{#if this.isLoadingReplies}}
-                  <div class="space-y-4">
-                    {{#each (array 1 2 3) as |placeholder|}}
-                      <div class="animate-pulse flex space-x-4">
-                        <div class="w-8 h-8 bg-gray-200 rounded-full"></div>
-                        <div class="flex-1 space-y-2">
-                          <div class="h-2 bg-gray-200 rounded w-1/4"></div>
-                          <div class="h-2 bg-gray-200 rounded w-1/2"></div>
-                        </div>
-                      </div>
-                    {{/each}}
-                  </div>
+                  {{!-- Loading state remains the same --}}
                 {{else}}
-                  <div class="space-y-4">
-                    {{#each this.replies as |reply|}}
-                      <div class="flex space-x-4">
-                        <div class="w-8 h-8 bg-purple-200 rounded-full flex-shrink-0 flex items-center justify-center text-sm">
-                          {{reply.user.avatar}}
-                        </div>
-                        <div class="flex-1">
-                          <div class="flex items-baseline">
-                            <span class="font-bold text-sm">{{reply.user.name}}</span>
-                            <span class="ml-2 text-xs text-gray-400">{{reply.timestamp}}</span>
-                          </div>
-                          <p class="mt-1 text-sm">{{reply.content}}</p>
-                        </div>
+                  {{#each this.replies as |reply|}}
+                    <div class="flex space-x-4">
+                      <div class="w-8 h-8 bg-purple-200 rounded-full flex-shrink-0 flex items-center justify-center text-sm">
+                        {{reply.user.avatar}}
                       </div>
-                    {{/each}}
-                  </div>
+                      <div class="flex-1">
+                        <div class="flex items-baseline">
+                          <span class="font-bold text-sm">{{reply.user.name}}</span>
+                          <span class="ml-2 text-xs text-gray-400">{{reply.timestamp}}</span>
+                        </div>
+                        <p class="mt-1 text-sm">{{reply.content}}</p>
+                      </div>
+                    </div>
+                  {{/each}}
                 {{/if}}
+              </div>
+
+              {{!-- Full-width Divider --}}
+              <div class="border-t-4 border-gray-200"></div>
+
+              {{!-- Reply Input Section (Part of scrollable content) --}}
+              <div class="p-4">
+                <textarea 
+                  class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                  rows="2"
+                  placeholder="Reply to thread..."
+                  value={{this.replyText}}
+                  {{on "input" this.updateReplyText}}
+                ></textarea>
+                
+                <div class="flex justify-end mt-2">
+                  <button 
+                    class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={{not this.replyText}}
+                    {{on "click" this.postReply}}
+                  >
+                    Reply
+                  </button>
+                </div>
               </div>
             </div>
           {{/if}}

@@ -297,6 +297,24 @@ function routes() {
     return newMessage;
   });
 
+  // POST endpoint for message replies
+  this.post('/api/messages/:messageId/replies', (schema, request) => {
+    const messageId = request.params.messageId;
+    const newReply = JSON.parse(request.requestBody);
+    
+    // Get existing replies or initialize new array
+    const existingReplies = messageReplies.get(messageId) || [];
+    
+    // Add new reply with unique ID
+    newReply.id = String(messageIdCounter++);
+    existingReplies.push(newReply);
+    
+    // Update stored replies
+    messageReplies.set(messageId, existingReplies);
+    
+    return newReply;
+  });
+
   // Allow other endpoints to pass through
   this.passthrough();
 }

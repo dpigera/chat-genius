@@ -17,6 +17,7 @@ export default class DashboardController extends Controller {
   @tracked isLoadingReplies = false;
   @tracked userStatus = 'active';
   @tracked messageText = '';
+  @tracked replyText = '';
 
   init() {
     super.init(...arguments);
@@ -139,5 +140,46 @@ export default class DashboardController extends Controller {
     
     // Clear input
     this.messageText = '';
+  }
+
+  @action
+  updateReplyText(event) {
+    this.replyText = event.target.value;
+  }
+
+  @action
+  async postReply() {
+    if (!this.replyText.trim() || !this.selectedMessage) return;
+
+    const newReply = {
+      content: this.replyText,
+      user: {
+        id: '3',
+        name: 'Devin Pigera',
+        avatar: 'DP'
+      },
+      timestamp: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+    };
+
+    try {
+      await fetch(`/api/messages/${this.selectedMessage.id}/replies`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newReply)
+      });
+
+      // Update replies list
+      this.replies = [...this.replies, newReply];
+      
+      // Update reply count on original message
+      this.selectedMessage.replyCount = (this.selectedMessage.replyCount || 0) + 1;
+      
+      // Clear input
+      this.replyText = '';
+    } catch (error) {
+      console.error('Error posting reply:', error);
+    }
   }
 } 
