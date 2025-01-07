@@ -1,8 +1,12 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
+import { inject as service } from '@ember/service';
 
 export default class DashboardController extends Controller {
+  @service router;
+  @service session;
+
   @tracked isProfileOpen = false;
   @tracked selectedChannelId = null;
   @tracked selectedUserId = null;
@@ -11,6 +15,7 @@ export default class DashboardController extends Controller {
   @tracked selectedMessage = null;
   @tracked replies = [];
   @tracked isLoadingReplies = false;
+  @tracked userStatus = 'active';
 
   init() {
     super.init(...arguments);
@@ -75,5 +80,15 @@ export default class DashboardController extends Controller {
   closeThread() {
     this.isThreadVisible = false;
     this.selectedMessage = null;
+  }
+
+  @action
+  toggleUserStatus() {
+    this.userStatus = this.userStatus === 'active' ? 'away' : 'active';
+  }
+
+  @action
+  async logout() {
+    await this.session.invalidate();
   }
 } 

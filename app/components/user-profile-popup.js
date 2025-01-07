@@ -12,4 +12,14 @@ export default class UserProfilePopupComponent extends Component {
     await this.session.invalidate();
     this.router.transitionTo('login');
   }
+
+  @action
+  setupClickOutside() {
+    // ... existing click outside logic ...
+  }
+
+  @action
+  teardownClickOutside() {
+    // ... existing cleanup logic ...
+  }
 } 
