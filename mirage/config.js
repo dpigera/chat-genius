@@ -315,6 +315,14 @@ function routes() {
     return newReply;
   });
 
+  // Mock file upload endpoint
+  this.post('/api/files/upload', (schema, request) => {
+    return {
+      url: 'https://fake-s3-bucket.s3.amazonaws.com/uploaded-file.pdf',
+      fileName: 'uploaded-file.pdf'
+    };
+  });
+
   // Allow other endpoints to pass through
   this.passthrough();
 }

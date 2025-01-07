@@ -6,6 +6,7 @@ import { inject as service } from '@ember/service';
 export default class DashboardController extends Controller {
   @service router;
   @service session;
+  @service s3Upload;
 
   @tracked isProfileOpen = false;
   @tracked selectedChannelId = null;
@@ -187,6 +188,43 @@ export default class DashboardController extends Controller {
       this.replyText = '';
     } catch (error) {
       console.error('Error posting reply:', error);
+    }
+  }
+
+  @action
+  async handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+      // Upload file to S3
+      const { url, fileName, fileEmoji } = await this.s3Upload.uploadFile(file);
+
+      // Create new message object
+      const newMessage = {
+        id: String(Date.now()),
+        content: `${fileEmoji} File uploaded: ${fileName}`,
+        fileInfo: {
+          name: fileName,
+          url: url
+        },
+        user: {
+          id: '3',
+          name: 'Devin Pigera',
+          avatar: 'DP'
+        },
+        timestamp: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
+        replyCount: 0,
+        reactionCount: 0
+      };
+
+      // Add message to messages list
+      this.messages = [...this.messages, newMessage];
+
+      // Clear the file input
+      event.target.value = '';
+    } catch (error) {
+      console.error('Error uploading file:', error);
     }
   }
 } 
