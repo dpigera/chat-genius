@@ -12,10 +12,6 @@ export default class PocketbaseService extends Service {
     this.client = new PocketBase('http://127.0.0.1:8090');
   }
 
-  get initials() {
-    return this.currentUser?.name?.split(' ').map(name => name[0]).join('');
-  }
-
   get name() {
     return this.currentUser?.name;
   }

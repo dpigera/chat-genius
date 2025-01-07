@@ -121,11 +121,10 @@
         {{on "click" (fn (mut this.isProfileOpen) (not this.isProfileOpen))}}
         {{!-- {{on "mousedown" (fn (mut this.isProfileOpen) (not this.isProfileOpen))}} --}}
       >
-        {{this.pocketbase.initials}}
+        {{initials this.pocketbase.currentUser.name}}
       </button>
 
       <UserProfilePopup 
-        @initials={{this.pocketbase.initials}}
         @user={{this.pocketbase.currentUser}}
         @isOpen={{this.isProfileOpen}} 
         @onClose={{fn (mut this.isProfileOpen) false}}
@@ -194,7 +193,7 @@
             {{#each this.messages as |message|}}
               <div class="flex space-x-4">
                 <div class="w-10 h-10 bg-purple-200 rounded-full flex-shrink-0 flex items-center justify-center">
-                  XX
+                  {{initials message.expand.user.name}}
                 </div>
                 <div class="flex-1">
                   <div class="flex items-baseline">
