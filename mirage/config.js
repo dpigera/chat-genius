@@ -48,6 +48,27 @@ function routes() {
     }
   });
 
+  // New endpoints
+  this.get('/api/channels', () => {
+    return {
+      channels: [
+        { id: '1', name: 'development' },
+        { id: '2', name: 'gauntlet-ai' },
+        { id: '3', name: 'project-1' }
+      ]
+    };
+  });
+
+  this.get('/api/directmsgs', () => {
+    return {
+      users: [
+        { id: '1', name: 'Austen Allred', status: 'active' },
+        { id: '2', name: 'Ashalesh Tilawat', status: 'active' },
+        { id: '3', name: 'Devin Pigera', status: 'active' }
+      ]
+    };
+  });
+
   // Allow other endpoints to pass through
   this.passthrough();
 }

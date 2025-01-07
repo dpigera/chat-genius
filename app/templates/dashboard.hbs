@@ -17,6 +17,7 @@
       <button 
         class="mt-auto w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center hover:opacity-90"
         {{on "click" (fn (mut this.isProfileOpen) (not this.isProfileOpen))}}
+        {{on "mousedown" (fn (mut this.isProfileOpen) (not this.isProfileOpen))}}
       >
         DP
       </button>
@@ -29,30 +30,46 @@
 
     {{!-- Column 2: Channels & DMs --}}
     <div class="w-60 bg-purple-800 text-white p-4 overflow-y-auto">
+      {{!-- Channels Section --}}
       <div class="mb-6">
         <h2 class="text-sm font-semibold text-purple-200 mb-2">Channels</h2>
-        <div class="space-y-1">
-          <div class="px-2 py-1 hover:bg-purple-700 rounded cursor-pointer"># development</div>
-          <div class="px-2 py-1 hover:bg-purple-700 rounded cursor-pointer"># gauntlet-ai</div>
-          <div class="px-2 py-1 hover:bg-purple-700 rounded cursor-pointer"># project-1</div>
-        </div>
+        {{#if @model.channels}}
+          <div class="space-y-1">
+            {{#each @model.channels as |channel|}}
+              <div class="px-2 py-1 hover:bg-purple-700 rounded cursor-pointer">
+                # {{channel.name}}
+              </div>
+            {{/each}}
+          </div>
+        {{else}}
+          <div class="px-2 py-1 text-purple-300">
+            <div class="animate-pulse flex space-x-2 items-center">
+              <div class="h-2 bg-purple-600 rounded w-24"></div>
+            </div>
+          </div>
+        {{/if}}
       </div>
+
+      {{!-- Direct Messages Section --}}
       <div>
         <h2 class="text-sm font-semibold text-purple-200 mb-2">Direct Messages</h2>
-        <div class="space-y-1">
-          <div class="px-2 py-1 hover:bg-purple-700 rounded cursor-pointer flex items-center">
-            <div class="w-4 h-4 bg-green-500 rounded-full mr-2"></div>
-            Austen Allred
+        {{#if @model.directMessages}}
+          <div class="space-y-1">
+            {{#each @model.directMessages as |user|}}
+              <div class="px-2 py-1 hover:bg-purple-700 rounded cursor-pointer flex items-center">
+                <div class="w-4 h-4 bg-green-500 rounded-full mr-2"></div>
+                {{user.name}}
+              </div>
+            {{/each}}
           </div>
-          <div class="px-2 py-1 hover:bg-purple-700 rounded cursor-pointer flex items-center">
-            <div class="w-4 h-4 bg-green-500 rounded-full mr-2"></div>
-            Ashalesh Tilawat
+        {{else}}
+          <div class="px-2 py-1 text-purple-300">
+            <div class="animate-pulse flex space-x-2 items-center">
+              <div class="w-4 h-4 bg-purple-600 rounded-full"></div>
+              <div class="h-2 bg-purple-600 rounded w-24"></div>
+            </div>
           </div>
-          <div class="px-2 py-1 hover:bg-purple-700 rounded cursor-pointer flex items-center">
-            <div class="w-4 h-4 bg-green-500 rounded-full mr-2"></div>
-            Devin Pigera
-          </div>
-        </div>
+        {{/if}}
       </div>
     </div>
 
