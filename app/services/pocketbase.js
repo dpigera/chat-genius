@@ -16,21 +16,57 @@ export default class PocketbaseService extends Service {
     return this.currentUser?.name;
   }
 
+  async authSuperUser() {
+    const admin = await this.pocketbase.client.admins.authWithPassword('dpigera@gmail.com', '123password');
+    return admin;
+  }
+
+  async getChannels() {
+    const channels = await this.client.collection('channels').getFullList({expand: 'users'});
+    return channels;
+  }
+
+  async getUsers() {
+    await this.authSuperUser
+    const users = await this.client.collection('users').getFullList();
+    return users;
+  }
+
+  async getChannelMessages(channelId) {
+    const filter = `channel="${channelId}"`; 
+    const messages = await this.client.collection('messages').getFullList({
+      expand: 'user',
+      filter,
+      sort: 'created',
+    });
+    return messages;
+  }
+  
+  async login({email, password}) {
+    const authData = await this.client.collection('users').authWithPassword(email, password);
+    this.currentUser = authData.record;
+    return {
+        access_token: authData.token,
+        token_type: 'bearer',
+        expires_in: 3600,
+        refresh_token: null,
+        user: authData.record
+    }
+  }
+
   async register({ email, password, passwordConfirm, firstName, lastName }) {
     try {
+      const name = `${firstName} ${lastName}`;
+      const verified = true;
       const userData = {
         email,
         password,
         passwordConfirm,
-        firstName,
-        lastName
+        name,
+        verified
       };
 
       const record = await this.client.collection('users').create(userData);
-      
-      // Auto login after registration
-      await this.login(email, password);
-      
       return record;
     } catch (error) {
       console.error('Registration failed:', error);

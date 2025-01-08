@@ -40,16 +40,8 @@ export default class DashboardController extends Controller {
     this.selectedChannelId = channelId;
     this.selectedUserId = null;
     this.isThreadVisible = false; // Hide thread when changing channels
-    
     try {
-
-
-      const filter = `channel="${this.selectedChannelId}"`; 
-      const messages = await this.pocketbase.client.collection('messages').getFullList({
-        expand: 'user',
-        filter,
-        sort: 'created',
-      });
+      const messages = await this.pocketbase.getChannelMessages(this.selectedChannelId);
       this.messages = messages;
 
       // subscribe to new channel
@@ -63,7 +55,7 @@ export default class DashboardController extends Controller {
             setTimeout(() => this.scrollToBottom(), 0);
           }
         });
-        console.log('sockets.live()');
+        console.log('subscribed');
       } catch (error) {
         console.error('Error subscribing to messages:', error);
       }
@@ -80,7 +72,17 @@ export default class DashboardController extends Controller {
     this.selectedUserId = userId;
     this.selectedChannelId = null;
     this.isThreadVisible = false; // Hide thread when changing DMs
-    
+
+
+    const filter = `channel="${this.selectedChannelId}"`; 
+      const messages = await this.pocketbase.client.collection('messages').getFullList({
+        expand: 'user',
+        filter,
+        sort: 'created',
+      });
+      this.messages = messages;
+      
+    /*
     try {
       const response = await fetch(`/api/directmsgs/${userId}/messages`);
       const data = await response.json();
@@ -89,6 +91,7 @@ export default class DashboardController extends Controller {
       console.error('Error loading messages:', error);
       this.messages = [];
     }
+    */
   }
 
   @action

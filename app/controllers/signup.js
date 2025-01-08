@@ -6,11 +6,8 @@ import { inject as service } from '@ember/service';
 export default class SignupController extends Controller {
   @service pocketbase;
   @service router;
+  @service session;
 
-  @tracked firstName = '';
-  @tracked lastName = '';
-  @tracked email = '';
-  @tracked password = '';
   @tracked errorMessage = '';
   @tracked isLoading = false;
 
@@ -19,17 +16,28 @@ export default class SignupController extends Controller {
     event.preventDefault();
     this.errorMessage = '';
     this.isLoading = true;
-
     try {
+      const firstName = event.target.firstName.value;
+      const lastName = event.target.lastName.value;
+      const email = event.target.email.value;
+      const password = event.target.password.value;
+
+      // Register
       await this.pocketbase.register({
-        email: this.email,
-        password: this.password,
-        passwordConfirm: this.password,
-        firstName: this.firstName,
-        lastName: this.lastName
+        email: email,
+        password: password,
+        passwordConfirm: password,
+        firstName: firstName,
+        lastName: lastName
       });
       
-      this.router.transitionTo('dashboard');
+      // Login if successful
+      await this.session.authenticate('authenticator:jwt', { 
+        email, 
+        password 
+      });
+      await this.router.transitionTo('dashboard');
+
     } catch (error) {
       this.errorMessage = error.message || 'Registration failed. Please try again.';
     } finally {

@@ -17,11 +17,11 @@
             <div class="mt-1">
               <input 
                 id="firstName" 
+                name="firstName"
                 type="text" 
-                required 
                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
-                value={{this.firstName}}
-                {{on "input" (fn (mut this.firstName) value="target.value")}}
+                value="Devin"
+                required
               >
             </div>
           </div>
@@ -32,11 +32,11 @@
             <div class="mt-1">
               <input 
                 id="lastName" 
+                name="lastName"
                 type="text" 
                 required 
                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
-                value={{this.lastName}}
-                {{on "input" (fn (mut this.lastName) value="target.value")}}
+                value="Pigera"
               >
             </div>
           </div>
@@ -51,10 +51,10 @@
             <input 
               id="email" 
               type="email" 
-              required 
+              name="email"
               class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
-              value={{this.email}}
-              {{on "input" (fn (mut this.email) value="target.value")}}
+              value="dpigera+user3@gmail.com"
+              required 
             >
           </div>
         </div>
@@ -68,10 +68,10 @@
             <input 
               id="password" 
               type="password" 
-              required 
+              name="password"
               class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
-              value={{this.password}}
-              {{on "input" (fn (mut this.password) value="target.value")}}
+              value="123password"
+              required 
             >
           </div>
         </div>

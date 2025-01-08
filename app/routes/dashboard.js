@@ -7,12 +7,9 @@ export default class DashboardRoute extends Route {
 
   async model() {
     try {
-      // Super admin auth
-      await this.pocketbase.client.admins.authWithPassword('dpigera@gmail.com', '123password');
-
       // Fetch channels + side load users
-      const channels = await this.pocketbase.client.collection('channels').getFullList({expand: 'users'});
-      const users = await this.pocketbase.client.collection('users').getFullList();
+      const channels = await this.pocketbase.getChannels();
+      const users = await this.pocketbase.getUsers();
       return {
         channels: channels,
         directMessages: users,
