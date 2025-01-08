@@ -48,6 +48,15 @@
       >
         {{if this.isLoading "Signing in..." "Sign In"}}
       </button>
+
+      <div class="mt-6">
+        <LinkTo 
+          @route="signup" 
+          class="w-full flex justify-center py-2 px-4 text-sm font-medium text-purple-600 hover:text-purple-500"
+        >
+          New User? Sign up for account
+        </LinkTo>
+      </div>
     </form>
   </div>
 </div> 

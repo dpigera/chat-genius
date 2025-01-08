@@ -15,4 +15,26 @@ export default class PocketbaseService extends Service {
   get name() {
     return this.currentUser?.name;
   }
+
+  async register({ email, password, passwordConfirm, firstName, lastName }) {
+    try {
+      const userData = {
+        email,
+        password,
+        passwordConfirm,
+        firstName,
+        lastName
+      };
+
+      const record = await this.client.collection('users').create(userData);
+      
+      // Auto login after registration
+      await this.login(email, password);
+      
+      return record;
+    } catch (error) {
+      console.error('Registration failed:', error);
+      throw error;
+    }
+  }
 }

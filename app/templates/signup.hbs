@@ -1,0 +1,107 @@
+<div class="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-md">
+    <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+      Create your account
+    </h2>
+  </div>
+
+  <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+      <form class="space-y-6" {{on "submit" this.handleSignup}}>
+        {{!-- Row 1: First Name and Last Name --}}
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="firstName" class="block text-sm font-medium text-gray-700">
+              First Name
+            </label>
+            <div class="mt-1">
+              <input 
+                id="firstName" 
+                type="text" 
+                required 
+                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                value={{this.firstName}}
+                {{on "input" (fn (mut this.firstName) value="target.value")}}
+              >
+            </div>
+          </div>
+          <div>
+            <label for="lastName" class="block text-sm font-medium text-gray-700">
+              Last Name
+            </label>
+            <div class="mt-1">
+              <input 
+                id="lastName" 
+                type="text" 
+                required 
+                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                value={{this.lastName}}
+                {{on "input" (fn (mut this.lastName) value="target.value")}}
+              >
+            </div>
+          </div>
+        </div>
+
+        {{!-- Row 2: Email --}}
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700">
+            Email address
+          </label>
+          <div class="mt-1">
+            <input 
+              id="email" 
+              type="email" 
+              required 
+              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+              value={{this.email}}
+              {{on "input" (fn (mut this.email) value="target.value")}}
+            >
+          </div>
+        </div>
+
+        {{!-- Row 3: Password --}}
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700">
+            Password
+          </label>
+          <div class="mt-1">
+            <input 
+              id="password" 
+              type="password" 
+              required 
+              class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+              value={{this.password}}
+              {{on "input" (fn (mut this.password) value="target.value")}}
+            >
+          </div>
+        </div>
+
+        {{#if this.errorMessage}}
+          <div class="text-red-600 text-sm">
+            {{this.errorMessage}}
+          </div>
+        {{/if}}
+
+        {{!-- Row 4: Sign Up Button --}}
+        <div>
+          <button 
+            type="submit" 
+            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+            disabled={{this.isLoading}}
+          >
+            {{if this.isLoading "Creating account..." "Sign up"}}
+          </button>
+        </div>
+      </form>
+
+      <div class="mt-6">
+        <LinkTo 
+          @route="login" 
+          class="w-full flex justify-center py-2 px-4 text-sm font-medium text-purple-600 hover:text-purple-500"
+        >
+          Already have an account? Sign in
+        </LinkTo>
+      </div>
+    </div>
+  </div>
+</div> 
