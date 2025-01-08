@@ -42,14 +42,27 @@ export default class PocketbaseService extends Service {
     return messages;
   }
 
-  async getDirectMessages(directMessageId) {
-    const filter = `directMessage="${directMessageId}"`; 
-    const messages = await this.client.collection('directMessages').getFullList({
+  async getDirectChannel(userId) {
+    const currentUserId = this.currentUser.id;
+    const filter = `users ~ '${userId}' && users ~ '${currentUserId}'`;
+    const directMessages = await this.client.collection('directMessages').getFullList({
+      filter,
+    });
+    return directMessages;
+  }
+
+  async getDirectMessages(directChannelId) {
+    const filter = `directMessage="${directChannelId}"`; 
+    const messages = await this.client.collection('messages').getFullList({
       expand: 'user',
       filter,
       sort: 'created',
     });
     return messages;
+  }
+
+  async createDirectChannel(userId) {
+    
   }
 
   async login({email, password}) {

@@ -74,18 +74,15 @@ export default class DashboardController extends Controller {
 
     this.selectedChannelId = null;
     this.isThreadVisible = false; // Hide thread when changing DMs
-    
+
     try {     
-      const filterQuery = `users ~ '${this.currentUserId}' && users ~ '${this.selectedUserId}'`;
-      const directMessages = await this.pocketbase.client.collection('directMessages').getFullList({
-          filter: filterQuery,
-      });
+      const directChannel = await this.pocketbase.getDirectChannel(this.selectedUserId);
       
       // if directMessage collection exists, fetch messages
-      // else show blank view
+      // else create new collection
 
-      if (directMessages.length > 0) {
-        const messages = await this.pocketbase.getDirectMessages(directMessages[0].id);
+      if (directChannel.length > 0) {
+        const messages = await this.pocketbase.getDirectMessages(directChannel[0].id);
         this.messages = messages;
       } else {
         this.messages = [];
@@ -188,22 +185,23 @@ export default class DashboardController extends Controller {
   async postMessage() {
     if (!this.messageText.trim()) return;
 
-    // const data = {
-    //   text,           // Text of the message
-    //   user: userId,   // User relation (single)
-    //   channel: channelId, // Channel relation (single)
-    // };
-
-    // const createdMessage = await pb.collection('messages').create(data);
-
-    const newMessage = {
+    let newMessage = {
       body: this.messageText,
       user: this.pocketbase.currentUser.id,
-      channel: this.selectedChannelId
     };
 
+    // set channelId
+    if (this.selectedChannelId) {
+      newMessage.channel = this.selectedChannelId;
+    }
+
+    // todo: fetch and add correct directMessageId
+    if (this.selectedUserId) {
+      newMessage.directMessage = this.selectedUserId;
+    }
+
     await this.pocketbase.client.collection('messages').create(newMessage);
-    await this.selectChannel(this.selectedChannelId);
+    // await this.selectChannel(this.selectedChannelId);
     this.messageText = '';
     
     // Scroll to bottom after adding new message
