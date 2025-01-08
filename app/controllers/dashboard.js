@@ -70,28 +70,30 @@ export default class DashboardController extends Controller {
   @action
   async selectUser(userId) {
     this.selectedUserId = userId;
+    this.currentUserId = this.pocketbase.currentUser.id;
+
     this.selectedChannelId = null;
     this.isThreadVisible = false; // Hide thread when changing DMs
-
-
-    const filter = `channel="${this.selectedChannelId}"`; 
-      const messages = await this.pocketbase.client.collection('messages').getFullList({
-        expand: 'user',
-        filter,
-        sort: 'created',
+    
+    try {     
+      const filterQuery = `users ~ '${this.currentUserId}' && users ~ '${this.selectedUserId}'`;
+      const directMessages = await this.pocketbase.client.collection('directMessages').getFullList({
+          filter: filterQuery,
       });
-      this.messages = messages;
       
-    /*
-    try {
-      const response = await fetch(`/api/directmsgs/${userId}/messages`);
-      const data = await response.json();
-      this.messages = data.messages;
-    } catch (error) {
-      console.error('Error loading messages:', error);
+      // if directMessage collection exists, fetch messages
+      // else show blank view
+
+      if (directMessages.length > 0) {
+        const messages = await this.pocketbase.getDirectMessages(directMessages[0].id);
+        this.messages = messages;
+      } else {
+        this.messages = [];
+      }
+
+    } catch(error) {
       this.messages = [];
     }
-    */
   }
 
   @action

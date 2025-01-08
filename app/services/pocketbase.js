@@ -41,7 +41,17 @@ export default class PocketbaseService extends Service {
     });
     return messages;
   }
-  
+
+  async getDirectMessages(directMessageId) {
+    const filter = `directMessage="${directMessageId}"`; 
+    const messages = await this.client.collection('directMessages').getFullList({
+      expand: 'user',
+      filter,
+      sort: 'created',
+    });
+    return messages;
+  }
+
   async login({email, password}) {
     const authData = await this.client.collection('users').authWithPassword(email, password);
     this.currentUser = authData.record;
