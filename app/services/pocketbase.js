@@ -17,8 +17,8 @@ export default class PocketbaseService extends Service {
   }
 
   async authSuperUser() {
-    const admin = await this.pocketbase.client.admins.authWithPassword('dpigera@gmail.com', '123password');
-    return admin;
+    let admin = await this.client.admins.authWithPassword('dpigera@gmail.com', '123password');
+    return admin; 
   }
 
   async getChannels() {
@@ -27,9 +27,13 @@ export default class PocketbaseService extends Service {
   }
 
   async getUsers() {
-    await this.authSuperUser
     const users = await this.client.collection('users').getFullList();
     return users;
+  }
+
+  async getUser(userId) {
+    const user = await this.client.collection('users').getOne(userId);
+    return user;
   }
 
   async getChannelMessages(channelId) {
@@ -45,10 +49,10 @@ export default class PocketbaseService extends Service {
   async getDirectChannel(userId) {
     const currentUserId = this.currentUser.id;
     const filter = `users ~ '${userId}' && users ~ '${currentUserId}'`;
-    const directMessages = await this.client.collection('directMessages').getFullList({
+    const directChannels = await this.client.collection('directMessages').getFullList({
       filter,
     });
-    return directMessages;
+    return directChannels;
   }
 
   async getDirectMessages(directChannelId) {
@@ -62,7 +66,12 @@ export default class PocketbaseService extends Service {
   }
 
   async createDirectChannel(userId) {
+    const data = {
+      users: [this.currentUser.id, userId]
+    };
     
+    const record = await this.client.collection('directMessages').create(data);
+    return record;
   }
 
   async login({email, password}) {
