@@ -5,6 +5,14 @@ export default class DashboardRoute extends Route {
   @service store;
   @service pocketbase;
 
+  async beforeModel() {
+    try {
+      await this.pocketbase.authSuperUser();
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
   async model() {
     try {
       // Fetch channels + side load users
