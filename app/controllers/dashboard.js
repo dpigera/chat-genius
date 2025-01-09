@@ -49,22 +49,15 @@ export default class DashboardController extends Controller {
         await this.pocketbase.client.collection('messages').subscribe('*', async (change) => {
           if (change.action === 'create') {
             console.log(change.record);
-            
-            
+          
             const userID = change.record.user;
             const user = await this.pocketbase.getUser(userID);
             
             change.record.expand = {};
             change.record.expand.user = {};
             change.record.expand.user = user;
-
           
-            if (change.record.channel === this.selectedChannelId) {
-              this.messages = [...this.messages, change.record];
-              setTimeout(() => this.scrollToBottom(), 0);
-            }
-          
-            if (change.record.directMessage === this.selectedUserId) {
+            if (change.record.channel === this.selectedChannelId || change.record.directMessage === this.selectedUserId) {
               this.messages = [...this.messages, change.record];
               setTimeout(() => this.scrollToBottom(), 0);
             }
