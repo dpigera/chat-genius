@@ -96,9 +96,8 @@ export default class DashboardController extends Controller {
     this.isLoadingReplies = true;
     
     try {
-      const response = await fetch(`/api/messages/${message.id}/replies`);
-      const data = await response.json();
-      this.replies = data.replies;
+      const replies = await this.pocketbase.getReplies(message.id);
+      this.replies = replies;
     } catch (error) {
       console.error('Error loading replies:', error);
       this.replies = [];

@@ -198,7 +198,7 @@
                 <div class="flex-1">
                   <div class="flex items-baseline">
                     <span class="font-bold">{{message.expand.user.name}}</span>
-                    <span class="ml-2 text-sm text-gray-400">{{message.created}}</span>
+                    <span class="ml-2 text-sm text-gray-400">{{relative-time message.created}}</span>
                   </div>
                   <p class="mt-1">{{message.body}}</p>
                   <div class="mt-1 flex items-center space-x-2">
@@ -207,7 +207,15 @@
                       class="text-sm {{if (eq this.selectedMessage.id message.id) 'text-purple-800 font-medium' 'text-purple-600'}} hover:underline"
                       {{on "click" (fn this.showThread message)}}
                     >
-                      {{message.replies.length}} replies
+                      {{#if (eq message.replyCount 0)}}
+                        Reply
+                      {{else}}
+                        {{#if (eq message.replyCount 1)}}
+                          1 Reply
+                        {{else}}
+                          {{message.replyCount}} replies
+                        {{/if}}
+                      {{/if}}
                     </button>
                   </div>
                 </div>
@@ -308,14 +316,14 @@
               <div class="p-5">
                 <div class="flex space-x-4">
                   <div class="w-10 h-10 bg-purple-200 rounded-full flex-shrink-0 flex items-center justify-center text-base">
-                    {{this.selectedMessage.user.avatar}}
+                    {{initials this.selectedMessage.expand.user.name}}
                   </div>
                   <div class="flex-1">
                     <div class="flex items-baseline">
-                      <span class="font-bold text-base">{{this.selectedMessage.user.name}}</span>
-                      <span class="ml-2 text-base text-gray-400">{{this.selectedMessage.timestamp}}</span>
+                      <span class="font-bold text-base">{{this.selectedMessage.expand.user.name}}</span>
+                      <span class="ml-2 text-base text-gray-400">{{relative-time this.selectedMessage.updated}}</span>
                     </div>
-                    <p class="mt-1 text-base">{{this.selectedMessage.content}}</p>
+                    <p class="mt-1 text-base">{{this.selectedMessage.body}}</p>
                   </div>
                 </div>
               </div>
@@ -340,14 +348,14 @@
                     {{#each this.replies as |reply|}}
                       <div class="flex space-x-4">
                         <div class="w-8 h-8 bg-purple-200 rounded-full flex-shrink-0 flex items-center justify-center text-base">
-                          {{reply.user.avatar}}
+                          {{initials reply.expand.user.name}}
                         </div>
                         <div class="flex-1">
                           <div class="flex items-baseline">
-                            <span class="font-bold text-base">{{reply.user.name}}</span>
-                            <span class="ml-2 text-base text-gray-400">{{reply.timestamp}}</span>
+                            <span class="font-bold text-base">{{reply.expand.user.name}}</span>
+                            <span class="ml-2 text-base text-gray-400">{{relative-time reply.created}}</span>
                           </div>
-                          <p class="mt-1 text-base">{{reply.content}}</p>
+                          <p class="mt-1 text-base">{{reply.body}}</p>
                         </div>
                       </div>
                     {{/each}}

@@ -63,6 +63,16 @@ export default class PocketbaseService extends Service {
     return user;
   }
 
+  async getReplies(messageId) {
+    const filter = `message="${messageId}"`;
+    const replies = await this.client.collection('replies').getFullList({
+      expand: 'user',
+      filter,
+      sort: 'created'
+    });
+    return replies;
+  }
+
   async getChannelMessages(channelId) {
     const filter = `channel="${channelId}"`; 
     const messages = await this.client.collection('messages').getFullList({
