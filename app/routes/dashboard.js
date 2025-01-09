@@ -16,7 +16,7 @@ export default class DashboardRoute extends Route {
   async model() {
     try {
       // Fetch channels + side load users
-      const channels = await this.pocketbase.getChannels();
+      const channels = await this.pocketbase.getMyChannels();
       let directChannels = await this.pocketbase.getMyDirectChannels();
     
       return {

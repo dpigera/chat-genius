@@ -21,9 +21,9 @@ export default class PocketbaseService extends Service {
     return admin; 
   }
 
-  async getChannels() {
-    const filter = `users ~ '${this.currentUser.id}'`;
-    const channels = await this.client.collection('channels').getFullList({expand: 'users', filter, sort: 'created'});
+  async getMyChannels() {
+    let channels = await this.client.collection('channels').getFullList({expand: 'users', sort: 'created'});
+    channels = channels.filter(d => d.users.indexOf(this.currentUser.id) !== -1)
     return channels;
   }
 
