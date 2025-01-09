@@ -16,6 +16,23 @@ export default class PocketbaseService extends Service {
     return this.currentUser?.name;
   }
 
+  async setMyStatus(status) {
+    try {
+      const validStatuses = ['active', 'away', 'busy'];
+      if (!validStatuses.includes(status)) {
+        throw new Error('Invalid status. Must be one of: ' + validStatuses.join(', '));
+      }
+      const user = await this.client.collection('users').update(this.currentUser.id, {
+        onlineStatus: status,
+      });
+      this.currentUser = user;
+      return user;
+    } catch (error) {
+      console.error('Failed to update status:', error);
+      throw error;
+    }
+  }
+
   async authSuperUser() {
     let admin = await this.client.admins.authWithPassword('dpigera@gmail.com', '123password');
     return admin; 

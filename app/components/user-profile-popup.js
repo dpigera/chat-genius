@@ -4,22 +4,17 @@ import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
 
 export default class UserProfilePopupComponent extends Component {
-  @service session;
-  @service router;
+  @service pocketbase;
+  @tracked currentStatus = 'active'; // Default status
 
   @action
-  async signOut() {
-    await this.session.invalidate();
-    this.router.transitionTo('login');
-  }
-
-  @action
-  setupClickOutside() {
-    // ... existing click outside logic ...
-  }
-
-  @action
-  teardownClickOutside() {
-    // ... existing cleanup logic ...
+  async updateUserStatus(event) {
+    const status = event.target.value;
+    try {
+      await this.pocketbase.setMyStatus(status);
+      this.currentStatus = status;
+    } catch (error) {
+      console.error('Failed to update status:', error);
+    }
   }
 } 
