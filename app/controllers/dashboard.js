@@ -25,7 +25,9 @@ export default class DashboardController extends Controller {
   @tracked searchText = '';
   @tracked isSearchPopupVisible = false;
   @tracked selectedSearchResult = null;
+
   @tracked messagesSubscription = null;
+  @tracked repliesSubscription = null;
 
   init() {
     super.init(...arguments);
@@ -37,6 +39,7 @@ export default class DashboardController extends Controller {
     
     // Start listening for messages when dashboard initializes
     this.messageSubscription = this.subscribeToMessages();
+    this.repliesSubscription = this.subscribeToReplies();
   }
 
   subscribeToMessages() {
@@ -62,9 +65,35 @@ export default class DashboardController extends Controller {
       });
   }
 
+  subscribeToReplies() {
+    return this.pocketbase.client
+      .collection('replies')
+      .subscribe('*', async (data) => {
+        let reply = data.record;
+        let user = await this.pocketbase.getUser(reply.user);
+        reply.expand = {};
+        reply.expand.user = user; 
+
+        let messageIndex = this.messages.findIndex(msg => msg.id === reply.message);
+        if (messageIndex !== -1) {
+          const updatedMessage = {
+            ...this.messages[messageIndex],
+            replyCount: (this.messages[messageIndex].replyCount || 0) + 1
+          };
+
+          this.messages = [
+            ...this.messages.slice(0, messageIndex),
+            updatedMessage,
+            ...this.messages.slice(messageIndex + 1)
+          ];
+        }        
+      });
+  }
+
   willDestroy() {
     if (this.messageSubscription) {
       this.messageSubscription.unsubscribe();
+      this.repliesSubscription.unsubscribe();
     }
   }
 
