@@ -101,7 +101,7 @@ export default class PocketbaseService extends Service {
   async getChannelMessages(channelId) {
     const filter = `channel="${channelId}"`; 
     const messages = await this.client.collection('messages').getFullList({
-      expand: 'user',
+      expand: 'user,reactions',
       filter,
       sort: 'created',
     });
@@ -111,7 +111,7 @@ export default class PocketbaseService extends Service {
   async getDirectMessages(directChannelId) {
     const filter = `directMessage="${directChannelId}"`; 
     const messages = await this.client.collection('messages').getFullList({
-      expand: 'user',
+      expand: 'user,reactions',
       filter,
       sort: 'created',
     });
@@ -171,5 +171,4 @@ export default class PocketbaseService extends Service {
     const records = await this.client.collection('channels').getFullList();
     return records;
   }
-
 }

@@ -45,6 +45,8 @@ export default class DashboardController extends Controller {
   @tracked isAddDirectMessageModalVisible = false;
   @tracked selectedDMUserIds = [];
 
+  @tracked activeReactionMessageId = null;
+
   init() {
     super.init(...arguments);
 
@@ -501,4 +503,36 @@ export default class DashboardController extends Controller {
   get isValidDirectMessage() {
     return this.selectedDMUserIds.length > 0;
   }
+
+  @action
+  async addReaction(messageId, emoji) {
+    try {
+      // create reaction
+      const data = {
+        message: messageId,
+        user: this.pocketbase.currentUser.id,
+        emoji: emoji
+      };
+      const reaction = await this.pocketbase.client.collection('reactions').create(data);
+
+      // add reaction to message
+      let message = await this.pocketbase.client.collection('messages').getOne(messageId);
+      message.reactions = [...message.reactions, reaction.id];
+      await this.pocketbase.client.collection('messages').update(messageId, message);
+
+      // fetch messages
+      let messages = [];
+      if (this.selectedChannelId) {
+        messages = await this.pocketbase.getChannelMessages(this.selectedChannelId);
+      } else if (this.selectedUserId) {
+        messages = await this.pocketbase.getDirectMessages(this.selectedUserId);
+      }
+      this.messages = messages;
+      this.activeReactionMessageId = null;
+    } catch (error) {
+      console.error('Failed to add reaction:', error);
+    }
+  }
 } 
+
+

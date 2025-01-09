@@ -230,21 +230,66 @@
                         {{/if}}
                       </button>
                     </span>
-                    <span>•</span>
-                    <span class="relative inline-block"> 
+                    <span class="text-sm text-purple-600">•</span>
+                    {{!-- Quick Reactions --}}
+                    <div class="relative">
                       <button 
-                        class="text-sm text-purple-600 hover:underline"
-                        {{on "click" (fn (mut this.reactMsgRowIndex) index)}}
+                        class="text-sm text-purple-600 font-medium hover:text-purple-800"
+                        {{on "click" (fn (mut this.activeReactionMessageId) message.id)}}
                       >
-                        {{#if (eq this.reactMsgRowIndex index)}}
-                          {{!-- Show heart and thumbs down options here --}}
-                          <span>💜</span>
-                          <span>👍</span>
-                        {{else}}
-                          <span>React</span>
-                        {{/if}}
+                        React
                       </button>
-                    </span>
+
+                      {{#if (eq this.activeReactionMessageId message.id)}}
+                        <div class="absolute left-0 top-full mt-1 bg-white rounded-lg shadow-lg p-2 z-50 border border-gray-300">
+                          <div class="relative">
+                            {{!-- Emoji buttons --}}
+                            <div class="flex space-x-2">
+                              <button 
+                                class="hover:bg-gray-100 p-1.5 rounded text-xl"
+                                {{on "click" (fn this.addReaction message.id "❤️")}}
+                              >
+                                ❤️
+                              </button>
+                              <button 
+                                class="hover:bg-gray-100 p-1.5 rounded text-xl"
+                                {{on "click" (fn this.addReaction message.id "👍")}}
+                              >
+                                👍
+                              </button>
+                              <button 
+                                class="hover:bg-gray-100 p-1.5 rounded text-xl"
+                                {{on "click" (fn this.addReaction message.id "😂")}}
+                              >
+                                😂
+                              </button>
+                              <button 
+                                class="hover:bg-gray-100 p-1.5 rounded text-xl"
+                                {{on "click" (fn (mut this.activeReactionMessageId) null)}}
+                              >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      {{/if}}
+                    </div>
+                    {{!-- show existing reactions --}}
+                    {{#if message.expand.reactions}}
+                      <div class="flex items-center space-x-1">
+                        {{#each-in (group-by "emoji" message.expand.reactions) as |emoji reactions|}}
+                          <button 
+                            class="flex items-center space-x-1 bg-gray-100 hover:bg-gray-200 rounded px-1.5 py-0.5"
+                            {{on "click" (fn this.addReaction message.id emoji)}}
+                          >
+                            <span>{{emoji}}</span>
+                            <span class="text-xs">{{reactions.length}}</span>
+                          </button>
+                        {{/each-in}}
+                      </div>
+                    {{/if}}
                   </div>
                 </div>
               </div>
