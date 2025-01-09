@@ -46,13 +46,13 @@
           </select>
           
           {{!-- Absolute positioned status circle --}}
-          <div class="absolute left-3 top-1/2 -translate-y-4 pointer-events-none">
+          <div class="absolute left-2 top-1/2 -translate-y-5 pointer-events-none">
             {{#if (eq this.currentStatus "active")}}
-              <div class="w-3 h-3 rounded-full bg-green-500"></div>
+              <div class="w-4 h-4 rounded-full bg-green-500"></div>
             {{else if (eq this.currentStatus "away")}}
-              <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+              <div class="w-4 h-4 rounded-full bg-yellow-500"></div>
             {{else if (eq this.currentStatus "busy")}}
-              <div class="w-3 h-3 rounded-full bg-red-500"></div>
+              <div class="w-4 h-4 rounded-full bg-red-500"></div>
             {{/if}}
           </div>
         </div>
