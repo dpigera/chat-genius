@@ -178,4 +178,35 @@ export default class PocketbaseService extends Service {
     const records = await this.client.collection('channels').getFullList();
     return records;
   }
+
+  async searchUsers(query) {
+    if (!query || query.length < 2) return [];
+    
+    try {
+      const users = await this.client.collection('users').getList(1, 10, {
+        filter: `name ~ "${query}"`,
+        sort: '-created'
+      });
+      return users.items;
+    } catch (error) {
+      console.error('Failed to search users:', error);
+      return [];
+    }
+  }
+
+  async searchMessages(query) {
+    if (!query || query.length < 2) return [];
+    
+    try {
+      const messages = await this.client.collection('messages').getList(1, 10, {
+        filter: `body ~ "${query}"`,
+        expand: 'user',
+        sort: '-created'
+      });
+      return messages.items;
+    } catch (error) {
+      console.error('Failed to search messages:', error);
+      return [];
+    }
+  }
 }

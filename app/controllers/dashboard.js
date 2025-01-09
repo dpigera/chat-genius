@@ -27,7 +27,11 @@ export default class DashboardController extends Controller {
 
   @tracked searchText = '';
   @tracked isSearchPopupVisible = false;
-  @tracked selectedSearchResult = null;
+  @tracked isSearching = false;
+  @tracked searchResults = {
+    users: [],
+    messages: []
+  };
 
   @tracked messagesSubscription = null;
   @tracked repliesSubscription = null;
@@ -368,17 +372,29 @@ export default class DashboardController extends Controller {
   }
 
   @action
-  updateSearchText(event) {
+  async updateSearchText(event) {
     this.searchText = event.target.value;
-    
-    if (this.selectedSearchResult) {
-      this.selectedSearchResult = null;
-    }
-    
     this.isSearchPopupVisible = this.searchText.length > 0;
     
-    if (this.searchText.length > 0) {
-      this.search.search(this.searchText);
+    if (this.searchText.length >= 2) {
+      this.isSearching = true;
+      
+      try {
+        // Run both searches in parallel
+        const [users, messages] = await Promise.all([
+          this.pocketbase.searchUsers(this.searchText),
+          this.pocketbase.searchMessages(this.searchText)
+        ]);
+        
+        this.searchResults = { users, messages };
+      } catch (error) {
+        console.error('Search failed:', error);
+        this.searchResults = { users: [], messages: [] };
+      } finally {
+        this.isSearching = false;
+      }
+    } else {
+      this.searchResults = { users: [], messages: [] };
     }
   }
 
