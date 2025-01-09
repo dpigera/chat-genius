@@ -34,37 +34,65 @@ export default class DashboardController extends Controller {
   @tracked isAddChannelModalVisible = false;
   @tracked newChannelName = '';
   @tracked selectedUserIds = [];
-  @tracked users = [];
+  
   @tracked channels = [];
+  @tracked directMessages = [];
+  @tracked users = [];
 
   @tracked isAddDirectMessageModalVisible = false;
   @tracked selectedDMUserIds = [];
 
   init() {
     super.init(...arguments);
-    setTimeout(() => {
-      if (this.model?.channels?.length > 0) {
-        this.selectChannel(this.model.channels[0].id);
-      }
-    }, 1000);
-    
+
+    this.loadUsers();
+    this.loadInitialData();
+  
     // Start listening for messages when dashboard initializes
     this.messageSubscription = this.subscribeToMessages();
     this.repliesSubscription = this.subscribeToReplies();
     this.channelSubscription = this.subscribeToChannels();
     this.userStatusSubscription = this.subscribeToUserStatus();
+  }
 
-    this.loadUsers();
+  async loadInitialData() {
+    try {
+      await this.pocketbase.authSuperUser();
+    } catch(e) {
+      console.log(e);
+    }
+
+    try {
+      // Load all data in parallel
+      const [channels, directMessages, users] = await Promise.all([
+        this.pocketbase.getChannels(),
+        this.pocketbase.getMyDirectChannels(),
+        this.pocketbase.getUsers()
+      ]);
+
+      // Set the data
+      this.channels = channels;
+      this.directMessages = directMessages;
+      this.users = users;
+
+      setTimeout(() => {
+        if (this.channels?.length > 0) {
+          this.selectChannel(this.channels[0].id);
+        }
+      }, 10);
+    } catch (error) {
+      console.error('Failed to load initial data:', error);
+    }
   }
 
   async subscribeToUserStatus() {
     return this.pocketbase.client
       .collection('users')
       .subscribe('*', async (data) => {
-        window.location.reload();
+        let directChannels = await this.pocketbase.getMyDirectChannels();
+        this.directMessages = directChannels;
       });
   }
-
 
   async subscribeToChannels() {
     return this.pocketbase.client
@@ -88,21 +116,39 @@ export default class DashboardController extends Controller {
     return this.pocketbase.client
       .collection('messages')
       .subscribe('*', async (data) => {
-
-        let message = data.record;
-        let user = await this.pocketbase.getUser(message.user);
-        message.expand = {};
-        message.expand.user = user; 
-
-        if (message.directMessage) {
-          if (this.selectedUserId === message.directMessageId) {
-            this.messages = [...this.messages, message];
+        if (data.action === 'create') {
+          let message = data.record;
+          let user = await this.pocketbase.getUser(message.user);
+          message.expand = {};
+          message.expand.user = user; 
+  
+          if (message.directMessage) {
+            if (this.selectedUserId === message.directMessageId) {
+              this.messages = [...this.messages, message];
+            }
+          } 
+          else if (message.channel) {
+            if (this.selectedChannelId === message.channel) {
+              this.messages = [...this.messages, message];
+            }
           }
-        } 
-        else if (message.channel) {
-          if (this.selectedChannelId === message.channel) {
-            this.messages = [...this.messages, message];
-          }
+        }
+
+        if (data.action === 'update') {
+          debugger;
+          let messageIndex = this.messages.findIndex(msg => msg.id === data.record.id);
+          if (messageIndex !== -1) {
+            const updatedMessage = {
+              ...this.messages[messageIndex],
+              replyCount: (this.messages[messageIndex].replyCount || 0) + 1
+            };
+
+            this.messages = [
+              ...this.messages.slice(0, messageIndex),
+              updatedMessage,
+              ...this.messages.slice(messageIndex + 1)
+            ];
+          }  
         }
       });
   }
@@ -111,24 +157,17 @@ export default class DashboardController extends Controller {
     return this.pocketbase.client
       .collection('replies')
       .subscribe('*', async (data) => {
-        let reply = data.record;
-        let user = await this.pocketbase.getUser(reply.user);
-        reply.expand = {};
-        reply.expand.user = user; 
 
-        let messageIndex = this.messages.findIndex(msg => msg.id === reply.message);
-        if (messageIndex !== -1) {
-          const updatedMessage = {
-            ...this.messages[messageIndex],
-            replyCount: (this.messages[messageIndex].replyCount || 0) + 1
-          };
-
-          this.messages = [
-            ...this.messages.slice(0, messageIndex),
-            updatedMessage,
-            ...this.messages.slice(messageIndex + 1)
-          ];
-        }        
+        
+        if (data.action === 'create') {
+          if (this.isThreadVisible === true) {
+            if (data.record.user !== this.pocketbase.currentUser.id) {
+              const replies = await this.pocketbase.getReplies(data.record.message);
+              this.replies = [];
+              this.replies = replies;
+            }
+          }
+        }      
       });
   }
 
@@ -402,7 +441,8 @@ export default class DashboardController extends Controller {
       this.hideAddChannelModal();
       
       // refresh
-      window.location.reload();
+      let channels = await this.pocketbase.getMyChannels();
+      this.channels = channels;
     } catch (error) {
       console.error('Failed to create channel:', error);
     }
@@ -440,7 +480,8 @@ export default class DashboardController extends Controller {
 
       this.hideAddDirectMessageModal();
 
-      window.location.reload();
+      let directChannels = await this.pocketbase.getMyDirectChannels();
+      this.directMessages = directChannels;
     } catch (error) {
       console.error('Failed to create direct message:', error);
     }

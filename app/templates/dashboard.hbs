@@ -137,9 +137,9 @@
       {{!-- Channels Section --}}
       <div class="mb-6 text-base">
         <h2 class="font-semibold text-purple-200 mb-2">Channels</h2>
-        {{#if @model.channels}}
+        {{#if this.channels}}
           <div class="space-y-1">
-            {{#each @model.channels as |channel|}}
+            {{#each this.channels as |channel|}}
               <div 
                 class="px-2 py-1 rounded cursor-pointer {{if (eq channel.id this.selectedChannelId) 'bg-purple-700' 'hover:bg-purple-700'}}"
                 {{on "click" (fn this.selectChannel channel.id)}}
@@ -166,9 +166,9 @@
       {{!-- Direct Messages Section --}}
       <div>
         <h2 class="text-sm font-semibold text-purple-200 mb-2">Direct Messages</h2>
-        {{#if @model.directMessages}}
+        {{#if this.directMessages}}
           <div class="space-y-1">
-            {{#each @model.directMessages as |user|}}
+            {{#each this.directMessages as |user|}}
               <div 
                 class="px-2 py-1 rounded cursor-pointer {{if (eq user.id this.selectedUserId) 'bg-purple-700' 'hover:bg-purple-700'}} flex items-center"
                 {{on "click" (fn this.selectUser user.id)}}
