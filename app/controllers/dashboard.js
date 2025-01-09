@@ -25,6 +25,7 @@ export default class DashboardController extends Controller {
   @tracked searchText = '';
   @tracked isSearchPopupVisible = false;
   @tracked selectedSearchResult = null;
+  @tracked messagesSubscription = null;
 
   init() {
     super.init(...arguments);
@@ -33,6 +34,38 @@ export default class DashboardController extends Controller {
         this.selectChannel(this.model.channels[0].id);
       }
     }, 1000);
+    
+    // Start listening for messages when dashboard initializes
+    this.messageSubscription = this.subscribeToMessages();
+  }
+
+  subscribeToMessages() {
+    return this.pocketbase.client
+      .collection('messages')
+      .subscribe('*', async (data) => {
+
+        let message = data.record;
+        let user = await this.pocketbase.getUser(message.user);
+        message.expand = {};
+        message.expand.user = user; 
+
+        if (message.directMessage) {
+          if (this.selectedUserId === message.directMessageId) {
+            this.messages = [...this.messages, message];
+          }
+        } 
+        else if (message.channel) {
+          if (this.selectedChannelId === message.channel) {
+            this.messages = [...this.messages, message];
+          }
+        }
+      });
+  }
+
+  willDestroy() {
+    if (this.messageSubscription) {
+      this.messageSubscription.unsubscribe();
+    }
   }
 
   @action
@@ -42,33 +75,8 @@ export default class DashboardController extends Controller {
     this.isThreadVisible = false; // Hide thread when changing channels
     try {
       const messages = await this.pocketbase.getChannelMessages(this.selectedChannelId);
+      this.messages = [];
       this.messages = messages;
-
-      // subscribe to new channel 
-      try {
-        await this.pocketbase.client.collection('messages').subscribe('*', async (change) => {
-          if (change.action === 'create') {
-            console.log(change.record);
-          
-            const userID = change.record.user;
-            const user = await this.pocketbase.getUser(userID);
-            
-            change.record.expand = {};
-            change.record.expand.user = {};
-            change.record.expand.user = user;
-          
-            if (change.record.channel === this.selectedChannelId || change.record.directMessage === this.selectedUserId) {
-              this.messages = [...this.messages, change.record];
-              setTimeout(() => this.scrollToBottom(), 0);
-            }
-            
-          }
-        });
-        console.log('subscribed');
-      } catch (error) {
-        console.error('Error subscribing to messages:', error);
-      }
-
 
     } catch (error) {
       console.error('Error loading messages:', error);
@@ -170,7 +178,7 @@ export default class DashboardController extends Controller {
       event.target.value = '';
       
       // Scroll to bottom after adding new message
-      setTimeout(() => this.scrollToBottom(), 0);
+      // setTimeout(() => this.scrollToBottom(), 0);
     } catch (error) {
       console.error('Error uploading file:', error);
     }
@@ -196,7 +204,7 @@ export default class DashboardController extends Controller {
     this.messageText = '';
     
     // Scroll to bottom after adding new message
-    setTimeout(() => this.scrollToBottom(), 0);
+    // setTimeout(() => this.scrollToBottom(), 0);
   }
 
   @action
@@ -207,33 +215,28 @@ export default class DashboardController extends Controller {
   @action
   async postReply() {
     if (!this.replyText.trim() || !this.selectedMessage) return;
-
-    const newReply = {
-      content: this.replyText,
-      user: {
-        id: '3',
-        name: 'Devin Pigera',
-        avatar: 'DP'
-      },
-      timestamp: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
-    };
+    let newReply = {
+      body: this.replyText,
+      user: this.pocketbase.currentUser.id,
+      message: this.selectedMessage.id
+    }
 
     try {
-      await fetch(`/api/messages/${this.selectedMessage.id}/replies`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newReply)
-      });
+      // create reply
+      await this.pocketbase.client.collection('replies').create(newReply);
 
-      // Update replies list
+      // increment reply counts
+      let msg = await this.pocketbase.client.collection('messages').getOne(this.selectedMessage.id);
+      msg.replyCount = (msg.replyCount || 0) + 1;
+      await this.pocketbase.client.collection('messages').update(this.selectedMessage.id, msg);
+
+      // add user to newReply (for initials)
+      newReply.expand = {};
+      newReply.expand.user = {};
+      newReply.expand.user = this.pocketbase.currentUser;
       this.replies = [...this.replies, newReply];
-      
-      // Update reply count on original message
-      this.selectedMessage.replyCount = (this.selectedMessage.replyCount || 0) + 1;
-      
-      // Clear input
+      this.isThreadVisible = true;
+
       this.replyText = '';
     } catch (error) {
       console.error('Error posting reply:', error);
