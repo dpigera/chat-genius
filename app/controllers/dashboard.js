@@ -29,6 +29,11 @@ export default class DashboardController extends Controller {
   @tracked messagesSubscription = null;
   @tracked repliesSubscription = null;
 
+  @tracked isAddChannelModalVisible = false;
+  @tracked newChannelName = '';
+  @tracked selectedUserIds = [];
+  @tracked users = [];
+
   init() {
     super.init(...arguments);
     setTimeout(() => {
@@ -40,6 +45,9 @@ export default class DashboardController extends Controller {
     // Start listening for messages when dashboard initializes
     this.messageSubscription = this.subscribeToMessages();
     this.repliesSubscription = this.subscribeToReplies();
+    
+    // Load users when dashboard initializes
+    this.loadUsers();
   }
 
   subscribeToMessages() {
@@ -313,5 +321,56 @@ export default class DashboardController extends Controller {
     this.selectedSearchResult = null;
     this.searchText = '';
     this.isSearchPopupVisible = false;
+  }
+
+  async loadUsers() {
+    this.users = await this.pocketbase.getUsers();
+  }
+
+  @action
+  showAddChannelModal() {
+    this.isAddChannelModalVisible = true;
+  }
+
+  @action
+  hideAddChannelModal() {
+    this.isAddChannelModalVisible = false;
+    this.newChannelName = '';
+    this.selectedUserIds = [];
+  }
+
+  @action
+  updateChannelName(event) {
+    this.newChannelName = event.target.value;
+  }
+
+  @action
+  updateSelectedUsers(event) {
+    const selectedOptions = Array.from(event.target.selectedOptions);
+    this.selectedUserIds = selectedOptions.map(option => option.value);
+  }
+
+  @action
+  async createChannel() {
+    if (!this.isValidChannel) return;
+
+    try {
+      // Add current user to the selected users
+      const userIds = [...this.selectedUserIds, this.pocketbase.currentUser.id];
+      
+      await this.pocketbase.createChannel({
+        name: this.newChannelName,
+        users: userIds
+      });
+
+      this.hideAddChannelModal();
+    } catch (error) {
+      console.error('Failed to create channel:', error);
+      // Handle error (show notification, etc.)
+    }
+  }
+
+  get isValidChannel() {
+    return this.newChannelName.trim() && this.selectedUserIds.length > 0;
   }
 } 

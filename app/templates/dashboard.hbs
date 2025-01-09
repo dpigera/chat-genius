@@ -137,8 +137,8 @@
     {{!-- Column 2: Channels & DMs --}}
     <div class="w-60 bg-purple-800 text-white p-4 overflow-y-auto">
       {{!-- Channels Section --}}
-      <div class="mb-6">
-        <h2 class="text-sm font-semibold text-purple-200 mb-2">Channels</h2>
+      <div class="mb-6 text-base">
+        <h2 class="font-semibold text-purple-200 mb-2">Channels</h2>
         {{#if @model.channels}}
           <div class="space-y-1">
             {{#each @model.channels as |channel|}}
@@ -150,6 +150,12 @@
               </div>
             {{/each}}
           </div>
+          <button 
+            class="mt-1 w-full text-left px-2 py-1 rounded cursor-pointer text-white hover:text-white hover:bg-purple-700 transition-colors"
+            {{on "click" this.showAddChannelModal}}
+          >
+            + Add Channel
+          </button>
         {{else}}
           <div class="px-2 py-1 text-purple-300">
             <div class="animate-pulse flex space-x-2 items-center">
@@ -469,6 +475,56 @@
         <div class="flex-1 p-6">
           <p class="text-base text-gray-500">Search results for detailed view goes here...</p>
         </div>
+      </div>
+    </div>
+  </div>
+{{/if}}
+
+{{#if this.isAddChannelModalVisible}}
+  <div class="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+    <div class="bg-white rounded-lg p-7 w-[560px] max-w-[90%]">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-lg font-bold">Add Channel</h2>
+        <button 
+          class="text-gray-500 hover:text-gray-700 text-xl"
+          {{on "click" this.hideAddChannelModal}}
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="space-y-6">
+        <div class="flex flex-col">
+          <label for="channelName" class="mb-2 text-black text-sm">Channel Name</label>
+          <input 
+            type="text" 
+            id="channelName"
+            class="w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 text-sm"
+            {{on "input" this.updateChannelName}}
+            value={{this.newChannelName}}
+          >
+        </div>
+
+        <div class="flex flex-col">
+          <label class="mb-2 text-sm">Select Users</label>
+          <select 
+            multiple 
+            class="space-y-1 w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 text-lg"
+            {{on "change" this.updateSelectedUsers}}
+          >
+            {{#each this.users as |user|}}
+              <option class="text-sm" value={{user.id}}>{{user.name}}</option>
+            {{/each}}
+          </select>
+        </div>
+
+        <button 
+          class="w-full py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:bg-purple-200 disabled:cursor-not-allowed text-base"
+          {{on "click" this.createChannel}}
+          disabled={{not this.isValidChannel}}
+        >
+          Create Channel
+        </button>
       </div>
     </div>
   </div>
