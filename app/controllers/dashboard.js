@@ -36,6 +36,9 @@ export default class DashboardController extends Controller {
   @tracked users = [];
   @tracked channels = [];
 
+  @tracked isAddDirectMessageModalVisible = false;
+  @tracked selectedDMUserIds = [];
+
   init() {
     super.init(...arguments);
     setTimeout(() => {
@@ -372,30 +375,73 @@ export default class DashboardController extends Controller {
   @action
   updateSelectedUsers(event) {
     const selectedOptions = Array.from(event.target.selectedOptions);
-    this.selectedUserIds = selectedOptions.map(option => option.value);
+    this.selectedUserIds = selectedOptions.map(option => option.getAttribute('user-id'));
+    
   }
 
   @action
   async createChannel() {
     if (!this.isValidChannel) return;
-
+    
     try {
-      // Add current user to the selected users
+      // Make sure we're getting user IDs, not names
       const userIds = [...this.selectedUserIds, this.pocketbase.currentUser.id];
-      const newChannel = await this.pocketbase.createChannel({
-        name: this.newChannelName,
-        users: userIds
+      
+      
+      await this.pocketbase.createChannel({
+        name: this.newChannelName.trim(),
+        users: userIds // This will now contain actual user IDs
       });
-
+      
+      // Reset and close modal
       this.hideAddChannelModal();
-
+      
+      // refresh
+      window.location.reload();
     } catch (error) {
       console.error('Failed to create channel:', error);
-      // Handle error (show notification, etc.)
     }
   }
 
   get isValidChannel() {
     return this.newChannelName.trim() && this.selectedUserIds.length > 0;
+  }
+
+  @action
+  showAddDirectMessageModal() {
+    this.isAddDirectMessageModalVisible = true;
+  }
+
+  @action
+  hideAddDirectMessageModal() {
+    this.isAddDirectMessageModalVisible = false;
+    this.selectedDMUserIds = [];
+  }
+
+  @action
+  updateSelectedDMUsers(event) {
+    const selectedOptions = Array.from(event.target.selectedOptions);
+    this.selectedDMUserIds = selectedOptions.map(option => option.value);
+  }
+
+  @action
+  async createDirectMessage() {
+    if (!this.isValidDirectMessage) return;
+
+    try {
+      // Add current user to the selected users
+      const userIds = [...this.selectedDMUserIds, this.pocketbase.currentUser.id];
+      await this.pocketbase.createDirectMessage({
+        users: userIds
+      });
+
+      this.hideAddDirectMessageModal();
+    } catch (error) {
+      console.error('Failed to create direct message:', error);
+    }
+  }
+
+  get isValidDirectMessage() {
+    return this.selectedDMUserIds.length > 0;
   }
 } 

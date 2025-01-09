@@ -189,6 +189,13 @@
           </div> --}}
         {{/if}}
       </div>
+
+      <button 
+        class="mt-1 w-full text-left px-2 py-1 rounded cursor-pointer text-white hover:text-white hover:bg-purple-700 transition-colors"
+        {{on "click" this.showAddDirectMessageModal}}
+      >
+        + Add User
+      </button>
     </div>
 
     {{!-- Messages Column --}}
@@ -482,9 +489,9 @@
 
 {{#if this.isAddChannelModalVisible}}
   <div class="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-    <div class="bg-white rounded-lg p-7 w-[560px] max-w-[90%]">
+    <div class="bg-white rounded-lg p-7 w-[560px] max-w-[90%] font-inter">
       <div class="flex justify-between items-center mb-6">
-        <h2 class="text-lg font-bold">Add Channel</h2>
+        <h2 class="text-base font-bold text-black">Add Channel</h2>
         <button 
           class="text-gray-500 hover:text-gray-700 text-xl"
           {{on "click" this.hideAddChannelModal}}
@@ -495,26 +502,25 @@
 
       <div class="space-y-6">
         <div class="flex flex-col">
-          <label for="channelName" class="mb-2 text-black text-sm">Channel Name</label>
+          <label class="mb-2 text-black text-base">Channel Name</label>
           <input 
             type="text" 
-            id="channelName"
-            class="w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 text-sm"
+            class="w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 text-base"
             {{on "input" this.updateChannelName}}
             value={{this.newChannelName}}
           >
         </div>
 
         <div class="flex flex-col">
-          <label class="mb-2 text-sm">Select Users</label>
+          <label class="mb-2 text-black text-base">Select Users</label>
           <select 
             multiple 
-            class="space-y-1 w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 text-lg"
+            class="w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 text-sm [&>option:checked]:bg-purple-500 [&>option:checked]:text-white [&>option]:cursor-pointer"
             {{on "change" this.updateSelectedUsers}}
           >
             {{#each this.users as |user|}}
               {{#if (not-eq user.id this.pocketbase.currentUser.id)}}
-                <option class="text-sm" value={{user.id}}>{{user.name}}</option>
+                <option class="hover:bg-purple-100 p-2 text-base" user-id={{user.id}}>{{user.name}}</option>
               {{/if}}
             {{/each}}
           </select>
@@ -526,6 +532,50 @@
           disabled={{not this.isValidChannel}}
         >
           Create Channel
+        </button>
+      </div>
+    </div>
+  </div>
+{{/if}}
+
+{{#if this.isAddDirectMessageModalVisible}}
+  <div class="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
+    <div class="bg-white rounded-lg p-7 w-[560px] max-w-[90%] font-inter">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-base font-bold text-black">Direct Message</h2>
+        <button 
+          class="text-gray-500 hover:text-gray-700 text-xl"
+          {{on "click" this.hideAddDirectMessageModal}}
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="space-y-6">
+        <div class="flex flex-col">
+          <label class="mb-2 text-black text-base">Select Users</label>
+          <select 
+            multiple 
+            class="w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 text-sm [&>option:checked]:bg-purple-500 [&>option:checked]:text-white [&>option]:cursor-pointer"
+            {{on "change" this.updateSelectedDMUsers}}
+          >
+            {{#each this.users as |user|}}
+              <option 
+                value={{user.id}}
+                class="hover:bg-purple-100 p-2 text-base"
+              >
+                {{user.name}}
+              </option>
+            {{/each}}
+          </select>
+        </div>
+
+        <button 
+          class="w-full py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:bg-purple-200 disabled:cursor-not-allowed text-base"
+          {{on "click" this.createDirectMessage}}
+          disabled={{not this.isValidDirectMessage}}
+        >
+          Send Message
         </button>
       </div>
     </div>
