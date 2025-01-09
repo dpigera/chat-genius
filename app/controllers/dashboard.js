@@ -28,11 +28,13 @@ export default class DashboardController extends Controller {
 
   @tracked messagesSubscription = null;
   @tracked repliesSubscription = null;
+  @tracked channelSubscription = null;
 
   @tracked isAddChannelModalVisible = false;
   @tracked newChannelName = '';
   @tracked selectedUserIds = [];
   @tracked users = [];
+  @tracked channels = [];
 
   init() {
     super.init(...arguments);
@@ -45,9 +47,29 @@ export default class DashboardController extends Controller {
     // Start listening for messages when dashboard initializes
     this.messageSubscription = this.subscribeToMessages();
     this.repliesSubscription = this.subscribeToReplies();
-    
-    // Load users when dashboard initializes
+    this.channelSubscription = this.subscribeToChannels();
+
     this.loadUsers();
+  }
+
+
+  async subscribeToChannels() {
+    return this.pocketbase.client
+      .collection('channels')
+      .subscribe('*', async (data) => {
+        
+      try {
+        const [channels, directChannels] = await Promise.all([
+          this.pocketbase.getMyChannels(),
+          this.pocketbase.getMyDirectChannels()
+        ]);
+        
+        debugger;
+      } catch (error) {
+        console.error('Failed to reload channels:', error);
+      }
+        
+      });
   }
 
   subscribeToMessages() {
@@ -102,6 +124,10 @@ export default class DashboardController extends Controller {
     if (this.messageSubscription) {
       this.messageSubscription.unsubscribe();
       this.repliesSubscription.unsubscribe();
+    }
+    
+    if (this.channelSubscription) {
+      this.channelSubscription.unsubscribe();
     }
   }
 
@@ -357,13 +383,13 @@ export default class DashboardController extends Controller {
     try {
       // Add current user to the selected users
       const userIds = [...this.selectedUserIds, this.pocketbase.currentUser.id];
-      
-      await this.pocketbase.createChannel({
+      const newChannel = await this.pocketbase.createChannel({
         name: this.newChannelName,
         users: userIds
       });
 
       this.hideAddChannelModal();
+
     } catch (error) {
       console.error('Failed to create channel:', error);
       // Handle error (show notification, etc.)

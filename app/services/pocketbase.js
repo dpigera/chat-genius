@@ -133,4 +133,18 @@ export default class PocketbaseService extends Service {
       throw error;
     }
   }
+
+  async createChannel(data) {
+    const record = await this.client.collection('channels').create({
+      name: data.name,
+      users: data.users
+    });
+    return record;
+  }
+
+  async getChannels() {
+    const records = await this.client.collection('channels').getFullList();
+    return records;
+  }
+
 }

@@ -513,7 +513,9 @@
             {{on "change" this.updateSelectedUsers}}
           >
             {{#each this.users as |user|}}
-              <option class="text-sm" value={{user.id}}>{{user.name}}</option>
+              {{#if (not-eq user.id this.pocketbase.currentUser.id)}}
+                <option class="text-sm" value={{user.id}}>{{user.name}}</option>
+              {{/if}}
             {{/each}}
           </select>
         </div>
