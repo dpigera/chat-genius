@@ -64,7 +64,6 @@ export default class DashboardController extends Controller {
           this.pocketbase.getMyDirectChannels()
         ]);
         
-        debugger;
       } catch (error) {
         console.error('Failed to reload channels:', error);
       }
