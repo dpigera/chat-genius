@@ -104,6 +104,9 @@ export default class DashboardController extends Controller {
           this.pocketbase.getMyChannels(),
           this.pocketbase.getMyDirectChannels()
         ]);
+
+        this.channels = channels;
+        this.directMessages = directChannels;
         
       } catch (error) {
         console.error('Failed to reload channels:', error);
@@ -135,7 +138,6 @@ export default class DashboardController extends Controller {
         }
 
         if (data.action === 'update') {
-          debugger;
           let messageIndex = this.messages.findIndex(msg => msg.id === data.record.id);
           if (messageIndex !== -1) {
             const updatedMessage = {
