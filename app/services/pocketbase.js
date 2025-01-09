@@ -38,6 +38,13 @@ export default class PocketbaseService extends Service {
     return admin; 
   }
 
+  async getMessage(messageId) {
+    const message = await this.client.collection('messages').getOne(messageId, {
+      expand: 'user,reactions'
+    });
+    return message; 
+  }
+
   async getMyChannels() {
     let channels = await this.client.collection('channels').getFullList({expand: 'users', sort: 'created'});
     channels = channels.filter(d => d.users.indexOf(this.currentUser.id) !== -1)

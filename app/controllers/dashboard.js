@@ -125,10 +125,12 @@ export default class DashboardController extends Controller {
       .collection('messages')
       .subscribe('*', async (data) => {
         if (data.action === 'create') {
-          let message = data.record;
-          let user = await this.pocketbase.getUser(message.user);
-          message.expand = {};
-          message.expand.user = user; 
+          // let message = data.record;
+          // let user = await this.pocketbase.getUser(message.user);
+          // message.expand = {};
+          // message.expand.user = user; 
+
+          let message = await this.pocketbase.getMessage(data.record.id);
   
           if (message.directMessage) {
             if (this.selectedUserId === message.directMessageId) {
