@@ -61,17 +61,25 @@ export default class PocketbaseService extends Service {
     // step 2: rename them
     directChannels.forEach(c => {
         if (c.users.length === 1) {
-          c.name = c.expand.users[0].name
+            c.name = c.expand.users[0].name
+           
+            c.onlineStatus = c.expand.users[0].onlineStatus;
+            
         } else {
-          let names = [];
-          c.expand.users.forEach(u => {
-            if (u.id !== this.currentUser.id) {
-              names.push(u.name);
+            let names = [];
+            c.expand.users.forEach(u => {
+                if (u.id !== this.currentUser.id) {
+                    names.push(u.name);
+                }
+            });
+            c.name = names.join(",");
+
+            if (names.length === 1) {
+                c.onlineStatus = c.expand.users.find(u => u.name === names[0]).onlineStatus;
             }
-          });
-          c.name = names.join(",");
-        }        
-      });
+        }  
+    });
+
     return directChannels;
   }
 
