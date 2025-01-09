@@ -209,4 +209,59 @@ export default class PocketbaseService extends Service {
       return [];
     }
   }
+
+  async uploadFile(file) {
+    try {
+      // Create form data
+      const formData = new FormData();
+      formData.append('file', file);
+
+      // Upload the file directly to the messages collection
+      const result = await this.client.collection('messages').create(formData);
+
+      return result.url;
+    } catch (error) {
+      console.error('File upload failed:', error);
+      throw error;
+    }
+  }
+
+  async createMessage(data) {
+    try {
+      let fileUrl = null;
+      let fileName = null;
+
+      if (data.file) {
+        // Create form data with both file and message data
+        const formData = new FormData();
+        formData.append('file', data.file);
+        formData.append('body', data.body);
+        formData.append('user', this.currentUser.id);
+        
+        if (data.channelId) {
+          formData.append('channel', data.channelId);
+        }
+        if (data.directMessageId) {
+          formData.append('directMessage', data.directMessageId);
+        }
+
+        const record = await this.client.collection('messages').create(formData);
+        return record;
+      } else {
+        // No file, just create regular message
+        const messageData = {
+          body: data.body,
+          user: this.currentUser.id,
+          channel: data.channelId,
+          directMessage: data.directMessageId
+        };
+
+        const record = await this.client.collection('messages').create(messageData);
+        return record;
+      }
+    } catch (error) {
+      console.error('Failed to create message:', error);
+      throw error;
+    }
+  }
 }

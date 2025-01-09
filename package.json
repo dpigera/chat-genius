@@ -92,6 +92,7 @@
     "edition": "octane"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.726.0",
     "@ember/render-modifiers": "^2.1.0",
     "pocketbase": "^0.25.0"
   }

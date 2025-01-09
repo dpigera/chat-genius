@@ -51,6 +51,9 @@ export default class DashboardController extends Controller {
 
   @tracked activeReactionMessageId = null;
 
+  @tracked isUploading = false;
+  @tracked fileToUpload = null;
+
   init() {
     super.init(...arguments);
 
@@ -283,56 +286,42 @@ export default class DashboardController extends Controller {
     if (!file) return;
 
     try {
-      const { url, fileName, fileEmoji } = await this.s3Upload.uploadFile(file);
+      this.isUploading = true;
 
-      const newMessage = {
-        id: String(Date.now()),
-        content: `${fileEmoji} File uploaded: ${fileName}`,
-        fileInfo: {
-          name: fileName,
-          url: url
-        },
-        user: {
-          id: '3',
-          name: 'Devin Pigera',
-          avatar: 'DP'
-        },
-        timestamp: new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
-        replyCount: 0,
-        reactionCount: 0
-      };
+      await this.pocketbase.createMessage({
+        body: this.messageText || '',
+        channelId: this.selectedChannelId,
+        directMessageId: this.selectedUserId,
+        file: file  // Pass the file directly
+      });
 
-      this.messages = [...this.messages, newMessage];
+      // Clear the input
       event.target.value = '';
-      
-      // Scroll to bottom after adding new message
-      // setTimeout(() => this.scrollToBottom(), 0);
+      this.messageText = '';
     } catch (error) {
-      console.error('Error uploading file:', error);
+      console.error('Upload failed:', error);
+    } finally {
+      this.isUploading = false;
     }
   }
 
   @action
   async postMessage() {
-    if (!this.messageText.trim()) return;
+    if (!this.messageText && !this.fileToUpload) return;
 
-    let newMessage = {
-      body: this.messageText,
-      user: this.pocketbase.currentUser.id,
-    };
+    try {
+      await this.pocketbase.createMessage({
+        body: this.messageText,
+        channelId: this.selectedChannelId,
+        directMessageId: this.selectedUserId,
+        file: this.fileToUpload
+      });
 
-    // set channel or directChannel
-    if (this.selectedChannelId) {
-      newMessage.channel = this.selectedChannelId;
+      this.messageText = '';
+      this.fileToUpload = null;
+    } catch (error) {
+      console.error('Failed to post message:', error);
     }
-    if (this.selectedUserId) {
-      newMessage.directMessage =this.selectedUserId;
-    }
-    await this.pocketbase.client.collection('messages').create(newMessage);
-    this.messageText = '';
-    
-    // Scroll to bottom after adding new message
-    // setTimeout(() => this.scrollToBottom(), 0);
   }
 
   @action
