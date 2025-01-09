@@ -201,7 +201,7 @@
       <div class="flex-1 overflow-y-auto p-6 messages-container">
         <div class="space-y-5">
           {{#if this.messages}}
-            {{#each this.messages as |message|}}
+            {{#each this.messages as |message index|}}
               <div class="flex space-x-4">
                 <div class="w-10 h-10 bg-purple-200 rounded-full flex-shrink-0 flex items-center justify-center">
                   {{initials message.expand.user.name}}
@@ -214,20 +214,37 @@
                   <p class="mt-1">{{message.body}}</p>
                   <div class="mt-1 flex items-center space-x-2">
                     {{!-- <button class="text-gray-400 hover:text-red-500">❤️</button> --}}
-                    <button 
-                      class="text-sm {{if (eq this.selectedMessage.id message.id) 'text-purple-800 font-medium' 'text-purple-600'}} hover:underline"
-                      {{on "click" (fn this.showThread message)}}
-                    >
-                      {{#if (eq message.replyCount 0)}}
-                        Reply
-                      {{else}}
-                        {{#if (eq message.replyCount 1)}}
-                          1 Reply
+                    <span>
+                      <button 
+                        class="text-sm {{if (eq this.selectedMessage.id message.id) 'text-purple-800 font-medium' 'text-purple-600'}} hover:underline"
+                        {{on "click" (fn this.showThread message)}}
+                      >
+                        {{#if (eq message.replyCount 0)}}
+                          Reply
                         {{else}}
-                          {{message.replyCount}} Replies
+                          {{#if (eq message.replyCount 1)}}
+                            1 Reply
+                          {{else}}
+                            {{message.replyCount}} Replies
+                          {{/if}}
                         {{/if}}
-                      {{/if}}
-                    </button>
+                      </button>
+                    </span>
+                    <span>•</span>
+                    <span class="relative inline-block"> 
+                      <button 
+                        class="text-sm text-purple-600 hover:underline"
+                        {{on "click" (fn (mut this.reactMsgRowIndex) index)}}
+                      >
+                        {{#if (eq this.reactMsgRowIndex index)}}
+                          {{!-- Show heart and thumbs down options here --}}
+                          <span>💜</span>
+                          <span>👍</span>
+                        {{else}}
+                          <span>React</span>
+                        {{/if}}
+                      </button>
+                    </span>
                   </div>
                 </div>
               </div>

@@ -21,7 +21,10 @@ export default class DashboardController extends Controller {
   @tracked userStatus = 'active';
   @tracked messageText = '';
   @tracked replyText = '';
+
   @tracked isMessageEmojiPickerVisible = false;
+  @tracked reactMsgRowIndex = null;
+
   @tracked searchText = '';
   @tracked isSearchPopupVisible = false;
   @tracked selectedSearchResult = null;
@@ -250,6 +253,12 @@ export default class DashboardController extends Controller {
   addEmojiToMessage(emoji) {
     this.messageText = `${this.messageText}${emoji}`;
     this.isMessageEmojiPickerVisible = false;
+  }
+
+  @action
+  addEmojiToChat(emoji) {
+    // this.messageText = `${this.messageText}${emoji}`;
+    // this.isMessageEmojiPickerVisible = false;
   }
 
   @action
