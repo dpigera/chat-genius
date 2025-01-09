@@ -1,113 +1,118 @@
 <div class="h-screen flex flex-col">
   {{!-- Header --}}
   <div class="bg-purple-900 border-b border-purple-800">
-    <div class="relative p-4">
-      <div class="relative ml-4 w-96">
-        <div class="relative">
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg class="h-5 w-5 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-          <input
-            type="text"
-            class="w-full pl-10 pr-4 py-2 rounded-lg bg-purple-500 border border-purple-500 focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-white text-purple-900"
-            placeholder="Search..."
-            value={{this.searchText}}
-            {{on "input" this.updateSearchText}}
-            {{on "focus" this.focusSearch}}
-          >
-          {{#if this.searchText}}
-            <button 
-              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-purple-400 hover:text-purple-600"
-              {{on "click" this.clearSearch}}
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    <div class="relative p-4 flex items-center justify-between">
+      <div class="flex items-center">
+        <img src="/logo.png" alt="Logo" class="h-8 w-auto mr-4">
+        <div class="relative w-96">
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="h-5 w-5 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
-            </button>
-          {{/if}}
-        </div>
-      </div>
-
-      {{#if this.isSearchPopupVisible}}
-        <div class="absolute left-[29px] mt-2 w-96 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-          <div class="flex justify-between items-center p-4 border-b border-gray-200">
-            <span class="text-base text-gray-700">Search Results</span>
-            <button 
-              class="text-gray-400 hover:text-gray-600"
-              {{on "click" this.clearSearch}}
+            </div>
+            <input
+              type="text"
+              class="w-full pl-10 pr-4 py-2 rounded-lg bg-purple-500 border border-purple-500 focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-white text-purple-900"
+              placeholder="Search..."
+              value={{this.searchText}}
+              {{on "input" this.updateSearchText}}
+              {{on "focus" this.focusSearch}}
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-          
-          <div class="p-4 h-[420px] overflow-y-auto">
-            {{#if this.isSearching}}
-              <div class="flex items-center justify-center h-full text-gray-500">
-                <svg class="animate-spin h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            {{#if this.searchText}}
+              <button 
+                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-purple-400 hover:text-purple-600"
+                {{on "click" this.clearSearch}}
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
-                Searching...
-              </div>
-            {{else}}
-              {{#if this.searchResults.users.length}}
-                <div class="mb-4">
-                  <h3 class="text-base font-semibold text-gray-500 mb-2">Users</h3>
-                  <div class="space-y-1">
-                    {{#each this.searchResults.users as |user|}}
-                      <div 
-                        class="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded-lg cursor-pointer"
-                        {{on "click" (fn this.selectSearchResult user)}}
-                      >
-                        <div class="w-8 h-8 bg-purple-200 rounded-full flex items-center justify-center text-purple-700 text-xs">
-                          {{initials user.name}}
-                        </div>
-                        <span class="text-base text-gray-900">{{user.name}}</span>
-                      </div>
-                    {{/each}}
-                  </div>
-                </div>
-              {{/if}}
-
-              {{#if this.searchResults.messages.length}}
-                {{#if this.searchResults.users.length}}
-                  <div class="border-b-4 border-gray-200 -mx-4"></div>
-                {{/if}}
-                
-                <div class="mt-4">
-                  <h3 class="text-base font-semibold text-gray-500 mb-2">Messages</h3>
-                  <div class="space-y-3">
-                    {{#each this.searchResults.messages as |message|}}
-                      <div 
-                        class="p-2 hover:bg-gray-100 rounded-lg cursor-pointer"
-                        {{on "click" (fn this.selectSearchResult message)}}
-                      >
-                        <div class="flex items-center space-x-3 mb-1">
-                          <div class="w-8 h-8 bg-purple-200 rounded-full flex items-center justify-center text-purple-700 text-xs">
-                            {{initials message.expand.user.name}}
-                          </div>
-                          <span class="text-base font-medium text-gray-900">{{message.expand.user.name}}</span>
-                          <span class="text-base text-gray-500">{{relative-time message.created}}</span>
-                        </div>
-                        <p class="text-base text-gray-600 ml-11">{{message.body}}</p>
-                      </div>
-                    {{/each}}
-                  </div>
-                </div>
-              {{/if}}
-
-              {{#unless (or this.searchResults.users.length this.searchResults.messages.length)}}
-                <p class="text-base text-gray-500 text-center">No results found</p>
-              {{/unless}}
+              </button>
             {{/if}}
           </div>
         </div>
-      {{/if}}
+      </div>
+      
+      <div class="w-96">{{!-- Empty div for flex spacing --}}</div>
     </div>
+
+    {{#if this.isSearchPopupVisible}}
+      <div class="absolute left-[230px] mt-2 w-96 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+        <div class="flex justify-between items-center p-4 border-b border-gray-200">
+          <span class="text-base text-gray-700">Search Results</span>
+          <button 
+            class="text-gray-400 hover:text-gray-600"
+            {{on "click" this.clearSearch}}
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <div class="p-4 h-[420px] overflow-y-auto">
+          {{#if this.isSearching}}
+            <div class="flex items-center justify-center h-full text-gray-500">
+              <svg class="animate-spin h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Searching...
+            </div>
+          {{else}}
+            {{#if this.searchResults.users.length}}
+              <div class="mb-4">
+                <h3 class="text-base font-semibold text-gray-500 mb-2">Users</h3>
+                <div class="space-y-1">
+                  {{#each this.searchResults.users as |user|}}
+                    <div 
+                      class="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded-lg cursor-pointer"
+                      {{on "click" (fn this.selectSearchResult user)}}
+                    >
+                      <div class="w-8 h-8 bg-purple-200 rounded-full flex items-center justify-center text-purple-700 text-xs">
+                        {{initials user.name}}
+                      </div>
+                      <span class="text-base text-gray-900">{{user.name}}</span>
+                    </div>
+                  {{/each}}
+                </div>
+              </div>
+            {{/if}}
+
+            {{#if this.searchResults.messages.length}}
+              {{#if this.searchResults.users.length}}
+                <div class="border-b-4 border-gray-200 -mx-4"></div>
+              {{/if}}
+              
+              <div class="mt-4">
+                <h3 class="text-base font-semibold text-gray-500 mb-2">Messages</h3>
+                <div class="space-y-3">
+                  {{#each this.searchResults.messages as |message|}}
+                    <div 
+                      class="p-2 hover:bg-gray-100 rounded-lg cursor-pointer"
+                      {{on "click" (fn this.selectSearchResult message)}}
+                    >
+                      <div class="flex items-center space-x-3 mb-1">
+                        <div class="w-8 h-8 bg-purple-200 rounded-full flex items-center justify-center text-purple-700 text-xs">
+                          {{initials message.expand.user.name}}
+                        </div>
+                        <span class="text-base font-medium text-gray-900">{{message.expand.user.name}}</span>
+                        <span class="text-base text-gray-500">{{relative-time message.created}}</span>
+                      </div>
+                      <p class="text-base text-gray-600 ml-11 -mt-2">{{message.body}}</p>
+                    </div>
+                  {{/each}}
+                </div>
+              </div>
+            {{/if}}
+
+            {{#unless (or this.searchResults.users.length this.searchResults.messages.length)}}
+              <p class="text-base text-gray-500 text-center">No results found</p>
+            {{/unless}}
+          {{/if}}
+        </div>
+      </div>
+    {{/if}}
   </div>
 
   {{!-- Main Content --}}
