@@ -186,11 +186,6 @@ export default class DashboardController extends Controller {
   }
 
   @action
-  toggleUserStatus() {
-    this.userStatus = this.userStatus === 'active' ? 'away' : 'active';
-  }
-
-  @action
   async logout() {
     await this.session.invalidate();
   }

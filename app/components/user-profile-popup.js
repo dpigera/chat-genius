@@ -5,7 +5,17 @@ import { inject as service } from '@ember/service';
 
 export default class UserProfilePopupComponent extends Component {
   @service pocketbase;
-  @tracked currentStatus = 'active'; // Default status
+  @tracked currentStatus = null;
+
+  constructor() {
+    super(...arguments);
+    this.getUserStatus();
+  }
+
+  async getUserStatus() {
+    let myUser = await this.pocketbase.getUser(this.pocketbase.currentUser.id);
+    this.currentStatus = myUser.onlineStatus;
+  }
 
   @action
   async updateUserStatus(event) {
