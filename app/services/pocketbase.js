@@ -22,13 +22,40 @@ export default class PocketbaseService extends Service {
   }
 
   async getChannels() {
-    const channels = await this.client.collection('channels').getFullList({expand: 'users'});
+    const filter = `users ~ '${this.currentUser.id}'`;
+    const channels = await this.client.collection('channels').getFullList({expand: 'users', filter, sort: 'created'});
     return channels;
   }
 
   async getUsers() {
     const users = await this.client.collection('users').getFullList();
     return users;
+  }
+
+  async getMyDirectChannels() {
+    let directChannels = await this.client.collection('directMessages').getFullList({
+      expand: 'users',
+      sort: 'created'
+    });
+    
+    // step 1: filter all directChannels that don't contain current user
+    directChannels = directChannels.filter(d => d.users.indexOf(this.currentUser.id) !== -1)
+    
+    // step 2: rename them
+    directChannels.forEach(c => {
+        if (c.users.length === 1) {
+          c.name = c.expand.users[0].name
+        } else {
+          let names = [];
+          c.expand.users.forEach(u => {
+            if (u.id !== this.currentUser.id) {
+              names.push(u.name);
+            }
+          });
+          c.name = names.join(",");
+        }        
+      });
+    return directChannels;
   }
 
   async getUser(userId) {
@@ -44,15 +71,6 @@ export default class PocketbaseService extends Service {
       sort: 'created',
     });
     return messages;
-  }
-
-  async getDirectChannel(userId) {
-    const currentUserId = this.currentUser.id;
-    const filter = `users ~ '${userId}' && users ~ '${currentUserId}'`;
-    const directChannels = await this.client.collection('directMessages').getFullList({
-      filter,
-    });
-    return directChannels;
   }
 
   async getDirectMessages(directChannelId) {

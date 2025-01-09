@@ -44,15 +44,31 @@ export default class DashboardController extends Controller {
       const messages = await this.pocketbase.getChannelMessages(this.selectedChannelId);
       this.messages = messages;
 
-      // subscribe to new channel
+      // subscribe to new channel 
       try {
         await this.pocketbase.client.collection('messages').subscribe('*', async (change) => {
           if (change.action === 'create') {
             console.log(change.record);
-            this.messages = [...this.messages, change.record];
+            
+            
+            const userID = change.record.user;
+            const user = await this.pocketbase.getUser(userID);
+            
+            change.record.expand = {};
+            change.record.expand.user = {};
+            change.record.expand.user = user;
 
-            // Scroll to bottom after adding new message
-            setTimeout(() => this.scrollToBottom(), 0);
+          
+            if (change.record.channel === this.selectedChannelId) {
+              this.messages = [...this.messages, change.record];
+              setTimeout(() => this.scrollToBottom(), 0);
+            }
+          
+            if (change.record.directMessage === this.selectedUserId) {
+              this.messages = [...this.messages, change.record];
+              setTimeout(() => this.scrollToBottom(), 0);
+            }
+            
           }
         });
         console.log('subscribed');
@@ -70,24 +86,11 @@ export default class DashboardController extends Controller {
   @action
   async selectUser(userId) {
     this.selectedUserId = userId;
-    this.currentUserId = this.pocketbase.currentUser.id;
-
     this.selectedChannelId = null;
     this.isThreadVisible = false; // Hide thread when changing DMs
-
     try {     
-      const directChannel = await this.pocketbase.getDirectChannel(this.selectedUserId);
-      
-      // if directMessage collection exists, fetch messages
-      // else create new collection
-
-      if (directChannel.length > 0) {
-        const messages = await this.pocketbase.getDirectMessages(directChannel[0].id);
-        this.messages = messages;
-      } else {
-        this.messages = [];
-      }
-
+      const messages = await this.pocketbase.getDirectMessages(this.selectedUserId);
+      this.messages = messages;
     } catch(error) {
       this.messages = [];
     }
@@ -190,18 +193,14 @@ export default class DashboardController extends Controller {
       user: this.pocketbase.currentUser.id,
     };
 
-    // set channelId
+    // set channel or directChannel
     if (this.selectedChannelId) {
       newMessage.channel = this.selectedChannelId;
     }
-
-    // todo: fetch and add correct directMessageId
     if (this.selectedUserId) {
-      newMessage.directMessage = this.selectedUserId;
+      newMessage.directMessage =this.selectedUserId;
     }
-
     await this.pocketbase.client.collection('messages').create(newMessage);
-    // await this.selectChannel(this.selectedChannelId);
     this.messageText = '';
     
     // Scroll to bottom after adding new message

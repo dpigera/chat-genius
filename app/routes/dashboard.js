@@ -17,10 +17,11 @@ export default class DashboardRoute extends Route {
     try {
       // Fetch channels + side load users
       const channels = await this.pocketbase.getChannels();
-      const users = await this.pocketbase.getUsers();
+      let directChannels = await this.pocketbase.getMyDirectChannels();
+    
       return {
         channels: channels,
-        directMessages: users,
+        directMessages: directChannels,
         selectedChannelId: channels[0]?.id,
         messages: []
       };
