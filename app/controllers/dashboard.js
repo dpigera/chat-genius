@@ -30,7 +30,7 @@ export default class DashboardController extends Controller {
   @tracked repliesSubscription = null;
   @tracked channelSubscription = null;
   @tracked userStatusSubscription = null;
-  
+
   @tracked isAddChannelModalVisible = false;
   @tracked newChannelName = '';
   @tracked selectedUserIds = [];
@@ -84,7 +84,7 @@ export default class DashboardController extends Controller {
       });
   }
 
-  subscribeToMessages() {
+  async subscribeToMessages() {
     return this.pocketbase.client
       .collection('messages')
       .subscribe('*', async (data) => {
@@ -107,7 +107,7 @@ export default class DashboardController extends Controller {
       });
   }
 
-  subscribeToReplies() {
+  async subscribeToReplies() {
     return this.pocketbase.client
       .collection('replies')
       .subscribe('*', async (data) => {
