@@ -560,12 +560,14 @@
             {{on "change" this.updateSelectedDMUsers}}
           >
             {{#each this.users as |user|}}
-              <option 
-                value={{user.id}}
-                class="hover:bg-purple-100 p-2 text-base"
-              >
-                {{user.name}}
-              </option>
+              {{#if (not-eq user.id this.pocketbase.currentUser.id)}}
+                <option 
+                  value={{user.id}}
+                  class="hover:bg-purple-100 p-2 text-base"
+                >
+                  {{user.name}}
+                </option>
+              {{/if}}
             {{/each}}
           </select>
         </div>

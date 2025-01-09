@@ -431,11 +431,11 @@ export default class DashboardController extends Controller {
     try {
       // Add current user to the selected users
       const userIds = [...this.selectedDMUserIds, this.pocketbase.currentUser.id];
-      await this.pocketbase.createDirectMessage({
-        users: userIds
-      });
+      await this.pocketbase.createDirectChannel(userIds);
 
       this.hideAddDirectMessageModal();
+
+      window.location.reload();
     } catch (error) {
       console.error('Failed to create direct message:', error);
     }

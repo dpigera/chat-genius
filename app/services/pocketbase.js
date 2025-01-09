@@ -93,9 +93,9 @@ export default class PocketbaseService extends Service {
     return messages;
   }
 
-  async createDirectChannel(userId) {
+  async createDirectChannel(userIds) {
     const data = {
-      users: [this.currentUser.id, userId]
+      users: userIds
     };
     
     const record = await this.client.collection('directMessages').create(data);
