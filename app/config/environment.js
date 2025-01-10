@@ -16,5 +16,11 @@ module.exports = function (environment) {
     // ... other config
   };
 
+  if (environment === 'production') {
+    // Add any production-specific settings
+    ENV.rootURL = '/';
+    ENV.locationType = 'history';
+  }
+
   return ENV;
 }; 
