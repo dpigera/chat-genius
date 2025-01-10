@@ -21,7 +21,7 @@
           name="email"
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
           placeholder="you@example.com"
-          value="user@gauntlet.ai"
+          value="dpigera+user1@gmail.com"
           required
         >
       </div>
@@ -36,7 +36,7 @@
           name="password"
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
           placeholder="Enter your password"
-          value="In23949dfskdsfske"
+          value="123password"
           required
         >
       </div>
@@ -48,6 +48,15 @@
       >
         {{if this.isLoading "Signing in..." "Sign In"}}
       </button>
+
+      <div class="mt-6">
+        <LinkTo 
+          @route="signup" 
+          class="w-full flex justify-center py-2 px-4 text-sm font-medium text-purple-600 hover:text-purple-500"
+        >
+          New User? Sign up for account
+        </LinkTo>
+      </div>
     </form>
   </div>
 </div> 

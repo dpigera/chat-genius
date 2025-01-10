@@ -3,36 +3,13 @@ import { inject as service } from '@ember/service';
 
 export default class JWTAuthenticator extends Base {
   @service session;
+  @service pocketbase;
 
   async authenticate(credentials) {
     try {
-      const response = await fetch('/auth/token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(credentials)
-      });
-
-      if (!response._bodyText?.includes('access_token')) {
-        const error = await response.json();
-        throw new Error(error.errors?.[0]?.detail || 'Invalid credentials');
-      }
-
-      /*
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.errors?.[0]?.detail || 'Invalid credentials');
-      }
-      */
-
-      const data = await response.json();
-      return {
-        ...data,
-        // Store additional session data if needed
-        authenticatedAt: new Date().toISOString()
-      };
-    } catch (error) {
+      const authData = await this.pocketbase.login({email: credentials.email, password: credentials.password});
+      return authData
+    }catch(error) {
       throw new Error(error.message || 'Authentication failed');
     }
   }
@@ -40,13 +17,14 @@ export default class JWTAuthenticator extends Base {
   restore(data) {
     // Check if we have valid session data
     if (data && data.access_token) {
+      this.pocketbase.currentUser = data.user;
       return Promise.resolve(data);
     }
     return Promise.reject();
   }
 
   invalidate() {
-    // Handle logout - for now, just resolve the promise
+    this.pocketbase.currentUser = null;
     return Promise.resolve();
   }
 }

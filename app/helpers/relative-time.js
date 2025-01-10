@@ -5,19 +5,25 @@ export function relativeTime([ms]) {
     return '';
   }
 
-  const hours = Math.floor(ms / (1000 * 60 * 60));
-  const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
-  const seconds = Math.floor((ms % (1000 * 60)) / 1000);
+  const date = new Date(ms);
+  const now = new Date();
+  const diff = Math.floor((now - date) / 1000);
 
-  // Build the timestamp string
-  const hoursString = hours > 0 ? `${hours} hr${hours !== 1 ? 's' : ''}` : '';
-  const minutesString =
-    minutes > 0 ? `${minutes} min${minutes !== 1 ? 's' : ''}` : '';
-  const secondsString =
-    seconds > 0 ? `${seconds} sec${seconds !== 1 ? 's' : ''}` : '';
-
-  // Combine the parts, ensuring proper spacing and avoiding leading/trailing spaces
-  return [hoursString, minutesString, secondsString].filter(Boolean).join(' ');
+  if (diff < 60) {
+    return 'just now';
+  } else if (diff < 3600) {
+    const mins = Math.floor(diff / 60);
+    return `${mins}m ago`;
+  } else if (diff < 86400) {
+    const hours = Math.floor(diff / 3600);
+    return `${hours}h ago`;
+  } else if (diff < 604800) {
+    const days = Math.floor(diff / 86400);
+    return `${days}d ago`;
+  } else {
+    const weeks = Math.floor(diff / 604800);
+    return `${weeks}w ago`;
+  }
 }
 
 export default helper(relativeTime);
