@@ -9,7 +9,16 @@ export default class PocketbaseService extends Service {
 
   constructor() {
     super(...arguments);
-    this.client = new PocketBase(config.pocketbase.url);
+    
+    // Add error handling and logging
+    const pocketbaseUrl = config?.pocketbase?.url;
+    if (!pocketbaseUrl) {
+      console.error('PocketBase URL not found in config:', config);
+      throw new Error('PocketBase URL not configured');
+    }
+    
+    this.client = new PocketBase(pocketbaseUrl);
+    console.log('PocketBase initialized with URL:', pocketbaseUrl);
   }
 
   get name() {
