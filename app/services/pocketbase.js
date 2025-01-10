@@ -9,7 +9,7 @@ export default class PocketbaseService extends Service {
 
   constructor() {
     super(...arguments);
-    this.client = new PocketBase(config.pocketbase.url);
+    this.client = new PocketBase(config.APP.API_HOST);
   }
 
   get name() {

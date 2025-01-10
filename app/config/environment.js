@@ -1,26 +1,36 @@
 'use strict';
 
 module.exports = function (environment) {
-  let ENV = {
-    modulePrefix: 'your-app-name',
+  const ENV = {
+    modulePrefix: 'player-basic',
     environment,
     rootURL: '/',
     locationType: 'history',
-    
-    pocketbase: {
-      url: environment === 'production' 
-        ? 'https://gauntlet-chatgenius-pocketbase-2.fly.dev'
-        : 'http://127.0.0.1:8090'
+    EmberENV: {
+      EXTEND_PROTOTYPES: false,
+      FEATURES: {
+      },
     },
-    
-    // ... other config
+
+    APP: {
+    },
   };
 
+  if (environment === 'development') {
+    ENV.APP.API_HOST = 'http://127.0.0.1:8090';
+  }
+
+  if (environment === 'test') {
+    ENV.locationType = 'none';
+    ENV.APP.LOG_ACTIVE_GENERATION = false;
+    ENV.APP.LOG_VIEW_LOOKUPS = false;
+    ENV.APP.rootElement = '#ember-testing';
+    ENV.APP.autoboot = false;
+  }
+
   if (environment === 'production') {
-    // Add any production-specific settings
-    ENV.rootURL = '/';
-    ENV.locationType = 'history';
+    ENV.APP.API_HOST = 'https://gauntlet-chatgenius-pocketbase-2.fly.dev';
   }
 
   return ENV;
-}; 
+};
