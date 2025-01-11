@@ -21,7 +21,7 @@ module.exports = function (environment) {
   };
 
   if (environment === 'development') {
-    ENV.APP.API_HOST = 'http://localhost:3000';
+    ENV.APP.API_HOST = 'http://127.0.0.1:8090';
   }
 
   if (environment === 'test') {
