@@ -58,6 +58,15 @@ export default class DashboardController extends Controller {
 
   @tracked isAIColumnVisible = true;
 
+  @tracked agentMessages = [{
+    isAgent: true,
+    message: "Hi! I'm Devin, an AI assistant at ChatGenius. I can do things like search for information and summarize records. What can I help you with?",
+    timestamp: "11:30 AM",
+    sender: "Agent Devin"
+  }];
+
+  @tracked aiMessageText = '';
+
   init() {
     super.init(...arguments);
 
@@ -563,6 +572,25 @@ export default class DashboardController extends Controller {
   @action
   closeAIColumn() {
     this.isAIColumnVisible = false;
+  }
+
+  @action
+  updateAIMessageText(event) {
+    this.aiMessageText = event.target.value;
+  }
+
+  @action
+  sendAIMessage() {
+    if (!this.aiMessageText.trim()) return;
+    
+    this.agentMessages = [...this.agentMessages, {
+      isAgent: false,
+      message: this.aiMessageText,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      sender: "User"
+    }];
+    
+    this.aiMessageText = '';
   }
 } 
 

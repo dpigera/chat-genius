@@ -87,7 +87,7 @@
 
             {{#if this.searchResults.messages.length}}
               {{#if this.searchResults.users.length}}
-                <div class="border-b-4 border-gray-200 -mx-4"></div>
+                <div class="border-b border-gray-200 -mx-4"></div>
               {{/if}}
               
               <div class="mt-4">
@@ -431,7 +431,7 @@
 
     {{!-- Thread Column --}}
     {{#if this.isThreadVisible}}
-      <div class="hidden md:block w-96 border-l-4 border-gray-200 bg-gray-50">
+      <div class="hidden md:block w-96 border-l border-gray-200 bg-gray-50">
         <div class="h-full flex flex-col">
           <div class="px-4 py-5 border-b border-gray-200 flex justify-between items-center">
             <h3 class="text-base font-bold">Thread</h3>
@@ -462,7 +462,7 @@
                 </div>
               </div>
               
-              <div class="border-b-4 border-gray-200"></div>
+              <div class="border-b border-gray-200"></div>
               
               <div class="p-4">
                 {{#if this.isLoadingReplies}}
@@ -497,7 +497,7 @@
                 {{/if}}
               </div>
 
-              <div class="border-t-4 border-gray-200"></div>
+              <div class="border-t border-gray-300"></div>
 
               <div class="p-4">
                 <textarea 
@@ -575,26 +575,19 @@
 
         {{!-- Scrollable Messages --}}
         <div class="flex-1 overflow-y-auto p-6 space-y-5">
-          {{#each (array 
-            "Hi! I'm Devin, an AI assistant at ChatGenius. I can do things like search for information and summarize records. What can I help you with?"
-            "How can I help you with your code today?"
-            "I can help with code review, debugging, and optimization."
-            "Just share your code and I'll analyze it for you."
-            "I can also help with architectural decisions."
-            "Let me know what you'd like to work on!"
-            "I'm particularly good at spotting performance issues."
-            "Ready when you are! 🚀"
-          ) as |message index|}}
+          {{#each this.agentMessages as |message|}}
             <div class="flex space-x-4">
-              <div class="w-10 h-10 rounded-lg {{if (mod index 2) 'bg-gray-200' 'bg-purple-200'}} flex-shrink-0 flex items-center justify-center">
-                <span class="{{if (mod index 2) 'text-gray-700' 'text-purple-700'}} font-medium">{{if (mod index 2) 'U' 'AD'}}</span>
+              <div class="w-10 h-10 rounded-lg {{if message.isAgent 'bg-purple-200' 'bg-gray-200'}} flex-shrink-0 flex items-center justify-center">
+                <span class="{{if message.isAgent 'text-purple-700' 'text-gray-700'}} font-medium">
+                  {{if message.isAgent 'AD' 'U'}}
+                </span>
               </div>
               <div class="flex-1">
                 <div class="flex items-baseline">
-                  <span class="font-bold">{{if (mod index 2) 'User' 'Agent Devin'}}</span>
-                  <span class="ml-2 text-sm text-gray-400">{{add 11 index}}:30 AM</span>
+                  <span class="font-bold">{{message.sender}}</span>
+                  <span class="ml-2 text-sm text-gray-400">{{message.timestamp}}</span>
                 </div>
-                <p class="mt-1">{{message}}</p>
+                <p class="mt-1">{{message.message}}</p>
               </div>
             </div>
           {{/each}}
@@ -606,7 +599,7 @@
             <textarea 
               class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
               rows="3"
-              placeholder="Ask Devin a question..."
+              placeholder="Message Agent Devin..."
               value={{this.aiMessageText}}
               {{on "input" this.updateAIMessageText}}
             ></textarea>
