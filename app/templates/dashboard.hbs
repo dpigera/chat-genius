@@ -122,6 +122,17 @@
       <div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center text-white font-bold">
         WS
       </div>
+      
+      {{!-- Mobile Menu Button --}}
+      <button 
+        class="mt-4 lg:hidden w-10 h-10 flex items-center justify-center text-white hover:bg-purple-800 rounded-lg"
+        {{on "click" this.openMobileMenu}}
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
       <button 
         class="mt-auto w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center hover:opacity-90"
         {{on "click" (fn (mut this.isProfileOpen) (not this.isProfileOpen))}}
@@ -138,68 +149,80 @@
       />
     </div>
 
-    {{!-- Column 2: Channels & DMs --}}
-    <div class="w-60 bg-purple-800 text-white p-4 overflow-y-auto">
-      {{!-- Channels Section --}}
-      <div class="mb-6 text-base">
-        <h2 class="font-semibold text-purple-200 mb-2">Channels</h2>
-        {{#if this.channels}}
-          <div class="space-y-1">
-            {{#each this.channels as |channel|}}
-              <div 
-                class="px-2 py-1 rounded cursor-pointer {{if (eq channel.id this.selectedChannelId) 'bg-purple-700' 'hover:bg-purple-700'}}"
-                {{on "click" (fn this.selectChannel channel.id)}}
-              >
-                # {{channel.name}}
-              </div>
-            {{/each}}
-          </div>
-          <button 
-            class="mt-1 w-full text-left px-2 py-1 rounded cursor-pointer text-white hover:text-white hover:bg-purple-700 transition-colors"
-            {{on "click" this.showAddChannelModal}}
-          >
-            + Add Channel
-          </button>
-        {{else}}
-          <div class="px-2 py-1 text-purple-300">
-            <div class="animate-pulse flex space-x-2 items-center">
-              <div class="h-2 bg-purple-600 rounded w-24"></div>
-            </div>
-          </div>
-        {{/if}}
-      </div>
-
-      {{!-- Direct Messages Section --}}
-      <div>
-        <h2 class="text-base font-semibold text-purple-200 mb-2">Direct Messages</h2>
-        {{#if this.directMessages}}
-          <div class="space-y-1">
-            {{#each this.directMessages as |user|}}
-              <div 
-                class="px-2 py-1 rounded cursor-pointer {{if (eq user.id this.selectedUserId) 'bg-purple-700' 'hover:bg-purple-700'}} flex items-center"
-                {{on "click" (fn this.selectUser user.id)}}
-              >
-                <div class="w-4 h-4 {{if (eq user.onlineStatus 'active') 'bg-green-500' (if (eq user.onlineStatus 'away') 'bg-yellow-500' (if (eq user.onlineStatus 'busy') 'bg-red-500' 'bg-gray-500'))}} rounded-full mr-2"></div>
-                {{user.name}}
-              </div>
-            {{/each}}
-          </div>
-        {{else}}
-          {{!-- <div class="px-2 py-1 text-purple-300">
-            <div class="animate-pulse flex space-x-2 items-center">
-              <div class="w-4 h-4 bg-purple-600 rounded-full"></div>
-              <div class="h-2 bg-purple-600 rounded w-24"></div>
-            </div>
-          </div> --}}
-        {{/if}}
-      </div>
-
+    {{!-- Channels & DMs --}}
+    <div class="{{if this.isMobileMenuOpen 'fixed inset-0 z-40 lg:relative' 'hidden lg:block'}} w-60 bg-purple-800 text-white overflow-y-auto">
+      {{!-- Mobile Close Button --}}
       <button 
-        class="mt-1 w-full text-left px-2 py-1 rounded cursor-pointer text-white hover:text-white hover:bg-purple-700 transition-colors"
-        {{on "click" this.showAddDirectMessageModal}}
+        class="lg:hidden absolute top-4 right-4 text-white"
+        {{on "click" this.closeMobileMenu}}
       >
-        + Add User
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
       </button>
+
+      <div class="p-4 pt-8 pl-6">
+        {{!-- Channels Section --}}
+        <div class="mb-6 text-base">
+          <h2 class="font-semibold text-purple-200 mb-2">Channels</h2>
+          {{#if this.channels}}
+            <div class="space-y-1">
+              {{#each this.channels as |channel|}}
+                <div 
+                  class="px-2 py-1 rounded cursor-pointer {{if (eq channel.id this.selectedChannelId) 'bg-purple-700' 'hover:bg-purple-700'}}"
+                  {{on "click" (fn this.selectChannel channel.id)}}
+                >
+                  # {{channel.name}}
+                </div>
+              {{/each}}
+            </div>
+            <button 
+              class="mt-1 w-full text-left px-2 py-1 rounded cursor-pointer text-white hover:text-white hover:bg-purple-700 transition-colors"
+              {{on "click" this.showAddChannelModal}}
+            >
+              + Add Channel
+            </button>
+          {{else}}
+            <div class="px-2 py-1 text-purple-300">
+              <div class="animate-pulse flex space-x-2 items-center">
+                <div class="h-2 bg-purple-600 rounded w-24"></div>
+              </div>
+            </div>
+          {{/if}}
+        </div>
+
+        {{!-- Direct Messages Section --}}
+        <div>
+          <h2 class="text-base font-semibold text-purple-200 mb-2">Direct Messages</h2>
+          {{#if this.directMessages}}
+            <div class="space-y-1">
+              {{#each this.directMessages as |user|}}
+                <div 
+                  class="px-2 py-1 rounded cursor-pointer {{if (eq user.id this.selectedUserId) 'bg-purple-700' 'hover:bg-purple-700'}} flex items-center"
+                  {{on "click" (fn this.selectUser user.id)}}
+                >
+                  <div class="w-4 h-4 {{if (eq user.onlineStatus 'active') 'bg-green-500' (if (eq user.onlineStatus 'away') 'bg-yellow-500' (if (eq user.onlineStatus 'busy') 'bg-red-500' 'bg-gray-500'))}} rounded-full mr-2"></div>
+                  {{user.name}}
+                </div>
+              {{/each}}
+            </div>
+          {{else}}
+            {{!-- <div class="px-2 py-1 text-purple-300">
+              <div class="animate-pulse flex space-x-2 items-center">
+                <div class="w-4 h-4 bg-purple-600 rounded-full"></div>
+                <div class="h-2 bg-purple-600 rounded w-24"></div>
+              </div>
+            </div> --}}
+          {{/if}}
+        </div>
+
+        <button 
+          class="mt-1 w-full text-left px-2 py-1 rounded cursor-pointer text-white hover:text-white hover:bg-purple-700 transition-colors"
+          {{on "click" this.showAddDirectMessageModal}}
+        >
+          + Add User
+        </button>
+      </div>
     </div>
 
     {{!-- Messages Column --}}

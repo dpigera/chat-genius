@@ -54,6 +54,8 @@ export default class DashboardController extends Controller {
   @tracked isUploading = false;
   @tracked fileToUpload = null;
 
+  @tracked isMobileMenuOpen = false;
+
   init() {
     super.init(...arguments);
 
@@ -539,6 +541,16 @@ export default class DashboardController extends Controller {
     } catch (error) {
       console.error('Failed to add reaction:', error);
     }
+  }
+
+  @action
+  openMobileMenu() {
+    this.isMobileMenuOpen = true;
+  }
+
+  @action
+  closeMobileMenu() {
+    this.isMobileMenuOpen = false;
   }
 } 
 
