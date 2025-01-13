@@ -56,6 +56,8 @@ export default class DashboardController extends Controller {
 
   @tracked isMobileMenuOpen = false;
 
+  @tracked isAIColumnVisible = false;
+
   init() {
     super.init(...arguments);
 
@@ -551,6 +553,16 @@ export default class DashboardController extends Controller {
   @action
   closeMobileMenu() {
     this.isMobileMenuOpen = false;
+  }
+
+  @action
+  toggleAIColumn() {
+    this.isAIColumnVisible = !this.isAIColumnVisible;
+  }
+
+  @action
+  closeAIColumn() {
+    this.isAIColumnVisible = false;
   }
 } 
 
