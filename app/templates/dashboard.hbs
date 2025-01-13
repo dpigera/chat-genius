@@ -265,7 +265,7 @@
                       {{else}}
                         <a href={{message.file}} target="_blank" class="text-blue-500 hover:underline flex items-center">
                           <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                           </svg>
                           Download File
                         </a>
@@ -544,19 +544,20 @@
     {{/if}}
 
     {{#if this.isAIColumnVisible}}
-      <div class="w-96 border-l border-gray-200">
-        <div class="p-4 border-b border-gray-200">
+      <div class="w-96 border-l border-gray-200 flex flex-col h-full">
+        <div class="p-4 border-b border-gray-200 bg-white z-10">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3">
               <img 
                 src="/ai-avatar.png" 
                 alt="AI Avatar" 
-                class="w-24 h-24 rounded-lg object-cover border border-gray-300"
+                class="w-24 h-24 rounded-lg object-cover"
               >
-              <div class="flex items-center space-x-2">
+              <div class="flex flex-col">
                 <h2 class="text-lg font-semibold">Agent Devin</h2>
-                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-sm font-medium rounded-md uppercase">
+                <span class="mt-1 px-2 py-1 bg-gray-100 text-gray-600 text-sm font-medium rounded-md uppercase self-start flex items-center">
                   AI APP
+                  <span class="ml-1.5 w-2 h-2 bg-green-500 rounded-full"></span>
                 </span>
               </div>
             </div>
@@ -570,6 +571,55 @@
             </button>
           </div>
           <p class="text-gray-500 text-base mt-6">Devin, your ChatGenius AI bae is now on demand!</p>
+        </div>
+
+        {{!-- Scrollable Messages --}}
+        <div class="flex-1 overflow-y-auto p-6 space-y-5">
+          {{#each (array 
+            "Hi! I'm Devin, an AI assistant at ChatGenius. I can do things like search for information and summarize records. What can I help you with?"
+            "How can I help you with your code today?"
+            "I can help with code review, debugging, and optimization."
+            "Just share your code and I'll analyze it for you."
+            "I can also help with architectural decisions."
+            "Let me know what you'd like to work on!"
+            "I'm particularly good at spotting performance issues."
+            "Ready when you are! 🚀"
+          ) as |message index|}}
+            <div class="flex space-x-4">
+              <div class="w-10 h-10 rounded-lg {{if (mod index 2) 'bg-gray-200' 'bg-purple-200'}} flex-shrink-0 flex items-center justify-center">
+                <span class="{{if (mod index 2) 'text-gray-700' 'text-purple-700'}} font-medium">{{if (mod index 2) 'U' 'AD'}}</span>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-baseline">
+                  <span class="font-bold">{{if (mod index 2) 'User' 'Agent Devin'}}</span>
+                  <span class="ml-2 text-sm text-gray-400">{{add 11 index}}:30 AM</span>
+                </div>
+                <p class="mt-1">{{message}}</p>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+
+        {{!-- Fixed Message Input --}}
+        <div class="border-t border-gray-200 p-4 bg-white">
+          <div class="mb-3">
+            <textarea 
+              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+              rows="3"
+              placeholder="Ask Devin a question..."
+              value={{this.aiMessageText}}
+              {{on "input" this.updateAIMessageText}}
+            ></textarea>
+          </div>
+          <div class="flex justify-end">
+            <button 
+              class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={{not this.aiMessageText}}
+              {{on "click" this.sendAIMessage}}
+            >
+              Post
+            </button>
+          </div>
         </div>
       </div>
     {{/if}}
