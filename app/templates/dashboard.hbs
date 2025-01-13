@@ -171,7 +171,7 @@
 
       {{!-- Direct Messages Section --}}
       <div>
-        <h2 class="text-sm font-semibold text-purple-200 mb-2">Direct Messages</h2>
+        <h2 class="text-base font-semibold text-purple-200 mb-2">Direct Messages</h2>
         {{#if this.directMessages}}
           <div class="space-y-1">
             {{#each this.directMessages as |user|}}
@@ -215,13 +215,13 @@
                 <div class="flex-1">
                   <div class="flex items-baseline">
                     <span class="font-bold">{{message.expand.user.name}}</span>
-                    <span class="ml-2 text-sm text-gray-400">{{relative-time message.created}}</span>
+                    <span class="ml-2 text-base text-gray-400">{{relative-time message.created}}</span>
                   </div>
                   <p class="mt-1">{{message.body}}</p>
                   
                   {{#if message.file}}
                     <div class="mt-2 border border-gray-200 rounded-lg p-3">
-                      <div class="text-sm text-gray-600 mb-2">{{message.file}}</div>
+                      <div class="text-base text-gray-600 mb-2">{{message.file}}</div>
                       {{#if (is-image message.file)}}
                         <div class="space-y-2">
                           <img src={{message.file}} alt={{message.file}} class="max-h-32 rounded-lg">
@@ -248,7 +248,7 @@
                     {{!-- <button class="text-gray-400 hover:text-red-500">❤️</button> --}}
                     <span>
                       <button 
-                        class="text-sm {{if (eq this.selectedMessage.id message.id) 'text-purple-800 font-medium' 'text-purple-600'}} hover:underline"
+                        class="text-base {{if (eq this.selectedMessage.id message.id) 'text-purple-800 font-medium' 'text-purple-600'}} hover:underline"
                         {{on "click" (fn this.showThread message)}}
                       >
                         {{#if (eq message.replyCount 0)}}
@@ -262,11 +262,11 @@
                         {{/if}}
                       </button>
                     </span>
-                    <span class="text-sm text-purple-600">•</span>
+                    <span class="text-base text-purple-600">•</span>
                     {{!-- Quick Reactions --}}
                     <div class="relative">
                       <button 
-                        class="text-sm text-purple-600 font-medium hover:text-purple-800"
+                        class="text-base text-purple-600 font-medium hover:text-purple-800"
                         {{on "click" (fn (mut this.activeReactionMessageId) message.id)}}
                       >
                         React
@@ -607,7 +607,7 @@
           <label class="mb-2 text-black text-base">Select Users</label>
           <select 
             multiple 
-            class="w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 text-sm [&>option:checked]:bg-purple-500 [&>option:checked]:text-white [&>option]:cursor-pointer"
+            class="w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 text-base [&>option:checked]:bg-purple-500 [&>option:checked]:text-white [&>option]:cursor-pointer"
             {{on "change" this.updateSelectedUsers}}
           >
             {{#each this.users as |user|}}
@@ -648,7 +648,7 @@
           <label class="mb-2 text-black text-base">Select Users</label>
           <select 
             multiple 
-            class="w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 text-sm [&>option:checked]:bg-purple-500 [&>option:checked]:text-white [&>option]:cursor-pointer"
+            class="w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 text-base [&>option:checked]:bg-purple-500 [&>option:checked]:text-white [&>option]:cursor-pointer"
             {{on "change" this.updateSelectedDMUsers}}
           >
             {{#each this.users as |user|}}
