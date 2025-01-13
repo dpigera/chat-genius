@@ -56,7 +56,7 @@ export default class DashboardController extends Controller {
 
   @tracked isMobileMenuOpen = false;
 
-  @tracked isAIColumnVisible = false;
+  @tracked isAIColumnVisible = true;
 
   init() {
     super.init(...arguments);

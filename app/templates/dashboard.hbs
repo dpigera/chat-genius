@@ -547,7 +547,19 @@
       <div class="w-96 border-l border-gray-200">
         <div class="p-4 border-b border-gray-200">
           <div class="flex items-center justify-between">
-            <h2 class="text-lg font-semibold">Agent Devin</h2>
+            <div class="flex items-center space-x-3">
+              <img 
+                src="/ai-avatar.png" 
+                alt="AI Avatar" 
+                class="w-24 h-24 rounded-lg object-cover border border-gray-300"
+              >
+              <div class="flex items-center space-x-2">
+                <h2 class="text-lg font-semibold">Agent Devin</h2>
+                <span class="px-2 py-1 bg-gray-100 text-gray-600 text-sm font-medium rounded-md uppercase">
+                  AI APP
+                </span>
+              </div>
+            </div>
             <button 
               class="text-gray-400 hover:text-gray-600"
               {{on "click" this.closeAIColumn}}
@@ -557,6 +569,7 @@
               </svg>
             </button>
           </div>
+          <p class="text-gray-500 text-base mt-6">Devin, your ChatGenius AI bae is now on demand!</p>
         </div>
       </div>
     {{/if}}
