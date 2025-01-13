@@ -34,12 +34,20 @@
       </div>
       
       <div class="w-96">{{!-- Empty div for flex spacing --}}</div>
-      <button 
-        class="px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-600 transition-colors"
-        {{on "click" this.toggleAIColumn}}
-      >
-        Show AI
-      </button>
+      <div class="flex items-center space-x-3">
+        <button 
+          class="px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-600 transition-colors"
+          {{on "click" this.toggleAIColumn}}
+        >
+          Show AI
+        </button>
+        <button 
+          class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-500 transition-colors"
+          {{on "click" this.populateMessages}}
+        >
+          Populate
+        </button>
+      </div>
     </div>
 
     {{#if this.isSearchPopupVisible}}

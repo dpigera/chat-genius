@@ -251,7 +251,7 @@ export default class PocketbaseService extends Service {
         // No file, just create regular message
         const messageData = {
           body: data.body,
-          user: this.currentUser.id,
+          user: data.user? data.user : this.currentUser.id,
           channel: data.channelId,
           directMessage: data.directMessageId
         };
