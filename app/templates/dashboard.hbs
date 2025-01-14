@@ -34,6 +34,20 @@
       </div>
       
       <div class="w-96">{{!-- Empty div for flex spacing --}}</div>
+      <div class="flex items-center space-x-3">
+        <button 
+          class="px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-600 transition-colors"
+          {{on "click" this.toggleAIColumn}}
+        >
+          Show AI
+        </button>
+        {{!-- <button 
+          class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-500 transition-colors"
+          {{on "click" this.populateMessages}}
+        >
+          Populate
+        </button> --}}
+      </div>
     </div>
 
     {{#if this.isSearchPopupVisible}}
@@ -81,7 +95,7 @@
 
             {{#if this.searchResults.messages.length}}
               {{#if this.searchResults.users.length}}
-                <div class="border-b-4 border-gray-200 -mx-4"></div>
+                <div class="border-b border-gray-200 -mx-4"></div>
               {{/if}}
               
               <div class="mt-4">
@@ -259,7 +273,7 @@
                       {{else}}
                         <a href={{message.file}} target="_blank" class="text-blue-500 hover:underline flex items-center">
                           <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                           </svg>
                           Download File
                         </a>
@@ -425,7 +439,7 @@
 
     {{!-- Thread Column --}}
     {{#if this.isThreadVisible}}
-      <div class="hidden md:block w-96 border-l-4 border-gray-200 bg-gray-50">
+      <div class="hidden md:block w-96 border-l border-gray-200 bg-gray-50">
         <div class="h-full flex flex-col">
           <div class="px-4 py-5 border-b border-gray-200 flex justify-between items-center">
             <h3 class="text-base font-bold">Thread</h3>
@@ -456,7 +470,7 @@
                 </div>
               </div>
               
-              <div class="border-b-4 border-gray-200"></div>
+              <div class="border-b border-gray-200"></div>
               
               <div class="p-4">
                 {{#if this.isLoadingReplies}}
@@ -491,7 +505,7 @@
                 {{/if}}
               </div>
 
-              <div class="border-t-4 border-gray-200"></div>
+              <div class="border-t border-gray-300"></div>
 
               <div class="p-4">
                 <textarea 
@@ -533,6 +547,83 @@
               </div>
             </div>
           {{/if}}
+        </div>
+      </div>
+    {{/if}}
+
+    {{#if this.isAIColumnVisible}}
+      <div class="w-96 border-l border-gray-200 flex flex-col h-full">
+        <div class="p-4 border-b border-gray-200 bg-gray-100 z-10">
+          <div class="flex justify-end mb-3">
+          <button 
+            class="text-gray-400 hover:text-gray-600"
+            {{on "click" this.closeAIColumn}}
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <img 
+                src="/ai-avatar.png" 
+                alt="AI Avatar" 
+                class="w-24 h-24 rounded-xl object-cover border border-gray-300"
+              >
+              <div class="flex flex-col">
+                <h2 class="text-lg font-semibold">Agent Devin</h2>
+                <span class="mt-1 px-2 py-1 bg-gray-100 text-gray-600 text-sm font-medium rounded-md uppercase self-start flex items-center">
+                  AI APP
+                  <span class="ml-1.5 w-2 h-2 bg-green-500 rounded-full"></span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <p class="text-gray-500 text-base mt-6">Your ChatGenius AI is now on demand!</p>
+        </div>
+
+        {{!-- Scrollable Messages --}}
+        <div class="flex-1 overflow-y-auto p-6 space-y-5">
+          {{#each this.agentMessages as |message|}}
+            <div class="flex space-x-4">
+              <div class="w-10 h-10 rounded-lg {{if message.isAgent 'bg-purple-200' 'bg-gray-200'}} flex-shrink-0 flex items-center justify-center">
+                <span class="{{if message.isAgent 'text-purple-700' 'text-gray-700'}} font-medium">
+                  {{if message.isAgent 'AD' 'U'}}
+                </span>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-baseline">
+                  <span class="font-bold">{{message.sender}}</span>
+                  <span class="ml-2 text-sm text-gray-400">{{message.timestamp}}</span>
+                </div>
+                <p class="mt-1">{{message.message}}</p>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+
+        {{!-- Fixed Message Input --}}
+        <div class="border-t border-gray-200 p-4 bg-white">
+          <div class="mb-3">
+            <textarea 
+              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none disabled:bg-gray-50 disabled:text-gray-500"
+              rows="3"
+              placeholder="Message Agent Devin..."
+              value={{this.aiMessageText}}
+              disabled={{this.isAILoading}}
+              {{on "input" this.updateAIMessageText}}
+            ></textarea>
+          </div>
+          <div class="flex justify-end">
+            <button 
+              class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={{or this.isAILoading (not this.aiMessageText)}}
+              {{on "click" this.sendAIMessage}}
+            >
+              {{if this.isAILoading "Thinking..." "Post"}}
+            </button>
+          </div>
         </div>
       </div>
     {{/if}}

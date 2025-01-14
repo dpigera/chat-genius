@@ -2,6 +2,7 @@ import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
+import config from '../config/environment';
 
 export default class DashboardController extends Controller {
   @service router;
@@ -55,6 +56,1224 @@ export default class DashboardController extends Controller {
   @tracked fileToUpload = null;
 
   @tracked isMobileMenuOpen = false;
+
+  @tracked isAIColumnVisible = true;
+
+  @tracked agentMessages = [{
+    isAgent: true,
+    message: "Hi! I'm Devin, an AI assistant at ChatGenius. I can do things like search for information and summarize records. What can I help you with?",
+    timestamp: "11:30 AM",
+    sender: "Agent Devin"
+  }];
+
+  @tracked aiMessageText = '';
+
+  // Add this array of sample messages
+  sampleMessages = [
+    {
+      "body": "I read somewhere that OpenAI is hiring for 100+ roles. That\u2019s insane!",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:16:22.401567"
+  },
+  {
+      "body": "How much do you think OpenAI spends on cloud computing? Must be insane!",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:16:25.401567"
+  },
+  {
+      "body": "Sam Altman always seems so calm when discussing existential risks.",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:16:28.401567"
+  },
+  {
+      "body": "Sam Altman seems to think AI can solve global challenges. Optimistic or na\u00efve?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:16:31.401567"
+  },
+  {
+      "body": "Do you think OpenAI will collaborate with more universities this year?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:16:34.401567"
+  },
+  {
+      "body": "OpenAI Codex is like having a superpowered dev assistant.",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:16:37.401567"
+  },
+  {
+      "body": "Sam Altman was talking about AGI timelines again. Wild stuff!",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:16:40.401567"
+  },
+  {
+      "body": "Sam Altman was talking about AGI timelines again. Wild stuff!",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:16:43.401567"
+  },
+  {
+      "body": "I wonder if OpenAI's focus will shift more towards enterprise solutions.",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:16:46.401567"
+  },
+  {
+      "body": "Do you think GPT-5 will be released this year?",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:16:49.401567"
+  },
+  {
+      "body": "Do you think GPT-5 will be released this year?",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:16:52.401567"
+  },
+  {
+      "body": "OpenAI's ChatGPT API has made my work so much faster.",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:16:55.401567"
+  },
+  {
+      "body": "Sam Altman mentioned regulation is essential, but will it even happen?",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:16:58.401567"
+  },
+  {
+      "body": "Sam Altman once said AI could be the biggest unlock for humanity. Do you agree?",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:17:01.401567"
+  },
+  {
+      "body": "I wonder if OpenAI's focus will shift more towards enterprise solutions.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:17:04.401567"
+  },
+  {
+      "body": "How much do you think OpenAI spends on cloud computing? Must be insane!",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:17:07.401567"
+  },
+  {
+      "body": "I read somewhere that OpenAI is hiring for 100+ roles. That\u2019s insane!",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:17:10.401567"
+  },
+  {
+      "body": "OpenAI Codex is like having a superpowered dev assistant.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:17:13.401567"
+  },
+  {
+      "body": "I read somewhere that OpenAI is hiring for 100+ roles. That\u2019s insane!",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:17:16.401567"
+  },
+  {
+      "body": "The way OpenAI is tackling AI ethics is really impressive.",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:17:19.401567"
+  },
+  {
+      "body": "Sam Altman seems to think AI can solve global challenges. Optimistic or na\u00efve?",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:17:22.401567"
+  },
+  {
+      "body": "How much do you think OpenAI spends on cloud computing? Must be insane!",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:17:25.401567"
+  },
+  {
+      "body": "I read somewhere that OpenAI is hiring for 100+ roles. That\u2019s insane!",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:17:28.401567"
+  },
+  {
+      "body": "Did you see the latest thing Sam Altman said about AI governance?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:17:31.401567"
+  },
+  {
+      "body": "OpenAI's research papers are such a good read for understanding AI trends.",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:17:34.401567"
+  },
+  {
+      "body": "Do you think OpenAI's approach to safety is too cautious or just right?",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:17:37.401567"
+  },
+  {
+      "body": "Sam Altman mentioned regulation is essential, but will it even happen?",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:17:40.401567"
+  },
+  {
+      "body": "The way OpenAI is tackling AI ethics is really impressive.",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:17:43.401567"
+  },
+  {
+      "body": "Do you think GPT-5 will be released this year?",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:17:46.401567"
+  },
+  {
+      "body": "I read somewhere that OpenAI is hiring for 100+ roles. That\u2019s insane!",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:17:49.401567"
+  },
+  {
+      "body": "OpenAI's GPT keeps getting better, but I\u2019m curious where it goes next.",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:17:52.401567"
+  },
+  {
+      "body": "Sam Altman always seems so calm when discussing existential risks.",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:17:55.401567"
+  },
+  {
+      "body": "Sam Altman once said AI could be the biggest unlock for humanity. Do you agree?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:17:58.401567"
+  },
+  {
+      "body": "Sam Altman seems to think AI can solve global challenges. Optimistic or na\u00efve?",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:18:01.401567"
+  },
+  {
+      "body": "OpenAI's research papers are such a good read for understanding AI trends.",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:18:04.401567"
+  },
+  {
+      "body": "Sam Altman mentioned regulation is essential, but will it even happen?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:18:07.401567"
+  },
+  {
+      "body": "OpenAI's ChatGPT API has made my work so much faster.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:18:10.401567"
+  },
+  {
+      "body": "OpenAI's ChatGPT API has made my work so much faster.",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:18:13.401567"
+  },
+  {
+      "body": "OpenAI's DALL\u00b7E 3 is my new favorite tool for creating content.",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:18:16.401567"
+  },
+  {
+      "body": "OpenAI Codex is like having a superpowered dev assistant.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:18:19.401567"
+  },
+  {
+      "body": "I wonder if OpenAI's focus will shift more towards enterprise solutions.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:18:22.401567"
+  },
+  {
+      "body": "The way OpenAI is tackling AI ethics is really impressive.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:18:25.401567"
+  },
+  {
+      "body": "I read somewhere that OpenAI is hiring for 100+ roles. That\u2019s insane!",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:18:28.401567"
+  },
+  {
+      "body": "OpenAI's GPT keeps getting better, but I\u2019m curious where it goes next.",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:18:31.401567"
+  },
+  {
+      "body": "Sam Altman\u2019s vision for universal basic income is tied to AI. Thoughts?",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:18:34.401567"
+  },
+  {
+      "body": "I read somewhere that OpenAI is hiring for 100+ roles. That\u2019s insane!",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:18:37.401567"
+  },
+  {
+      "body": "The way OpenAI is tackling AI ethics is really impressive.",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:18:40.401567"
+  },
+  {
+      "body": "Do you think GPT-5 will be released this year?",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:18:43.401567"
+  },
+  {
+      "body": "Sam Altman\u2019s vision for universal basic income is tied to AI. Thoughts?",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:18:46.401567"
+  },
+  {
+      "body": "The way OpenAI is tackling AI ethics is really impressive.",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:18:49.401567"
+  },
+  {
+      "body": "OpenAI's GPT keeps getting better, but I\u2019m curious where it goes next.",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:18:52.401567"
+  },
+  {
+      "body": "Do you think GPT-5 will be released this year?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:18:55.401567"
+  },
+  {
+      "body": "Has anyone tried OpenAI\u2019s Whisper for transcription? It's amazing.",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:18:58.401567"
+  },
+  {
+      "body": "Sam Altman once said AI could be the biggest unlock for humanity. Do you agree?",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:19:01.401567"
+  },
+  {
+      "body": "Did you see the latest thing Sam Altman said about AI governance?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:19:04.401567"
+  },
+  {
+      "body": "Do you think GPT-5 will be released this year?",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:19:07.401567"
+  },
+  {
+      "body": "Sam Altman seems to think AI can solve global challenges. Optimistic or na\u00efve?",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:19:10.401567"
+  },
+  {
+      "body": "Sam Altman\u2019s vision for universal basic income is tied to AI. Thoughts?",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:19:13.401567"
+  },
+  {
+      "body": "OpenAI Codex is like having a superpowered dev assistant.",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:19:16.401567"
+  },
+  {
+      "body": "Do you think GPT-5 will be released this year?",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:19:19.401567"
+  },
+  {
+      "body": "Did you see the latest thing Sam Altman said about AI governance?",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:19:22.401567"
+  },
+  {
+      "body": "Sam Altman was talking about AGI timelines again. Wild stuff!",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:19:25.401567"
+  },
+  {
+      "body": "Sam Altman once said AI could be the biggest unlock for humanity. Do you agree?",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:19:28.401567"
+  },
+  {
+      "body": "Did you see the latest thing Sam Altman said about AI governance?",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:19:31.401567"
+  },
+  {
+      "body": "OpenAI's research papers are such a good read for understanding AI trends.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:19:34.401567"
+  },
+  {
+      "body": "How much do you think OpenAI spends on cloud computing? Must be insane!",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:19:37.401567"
+  },
+  {
+      "body": "Sam Altman always seems so calm when discussing existential risks.",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:19:40.401567"
+  },
+  {
+      "body": "How much do you think OpenAI spends on cloud computing? Must be insane!",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:19:43.401567"
+  },
+  {
+      "body": "OpenAI's research papers are such a good read for understanding AI trends.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:19:46.401567"
+  },
+  {
+      "body": "OpenAI Codex is like having a superpowered dev assistant.",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:19:49.401567"
+  },
+  {
+      "body": "OpenAI's GPT keeps getting better, but I\u2019m curious where it goes next.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:19:52.401567"
+  },
+  {
+      "body": "OpenAI Codex is like having a superpowered dev assistant.",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:19:55.401567"
+  },
+  {
+      "body": "Do you think OpenAI will collaborate with more universities this year?",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:19:58.401567"
+  },
+  {
+      "body": "OpenAI's research papers are such a good read for understanding AI trends.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:20:01.401567"
+  },
+  {
+      "body": "Sam Altman mentioned regulation is essential, but will it even happen?",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:20:04.401567"
+  },
+  {
+      "body": "Sam Altman always seems so calm when discussing existential risks.",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:20:07.401567"
+  },
+  {
+      "body": "Sam Altman once said AI could be the biggest unlock for humanity. Do you agree?",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:20:10.401567"
+  },
+  {
+      "body": "Sam Altman seems to think AI can solve global challenges. Optimistic or na\u00efve?",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:20:13.401567"
+  },
+  {
+      "body": "Sam Altman once said AI could be the biggest unlock for humanity. Do you agree?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:20:16.401567"
+  },
+  {
+      "body": "Sam Altman always seems so calm when discussing existential risks.",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:20:19.401567"
+  },
+  {
+      "body": "Sam Altman mentioned regulation is essential, but will it even happen?",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:20:22.401567"
+  },
+  {
+      "body": "OpenAI's GPT keeps getting better, but I\u2019m curious where it goes next.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:20:25.401567"
+  },
+  {
+      "body": "Do you think OpenAI's approach to safety is too cautious or just right?",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:20:28.401567"
+  },
+  {
+      "body": "Do you think OpenAI will collaborate with more universities this year?",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:20:31.401567"
+  },
+  {
+      "body": "OpenAI's research papers are such a good read for understanding AI trends.",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:20:34.401567"
+  },
+  {
+      "body": "The way OpenAI is tackling AI ethics is really impressive.",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:20:37.401567"
+  },
+  {
+      "body": "Do you think OpenAI will collaborate with more universities this year?",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:20:40.401567"
+  },
+  {
+      "body": "Did you see the latest thing Sam Altman said about AI governance?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:20:43.401567"
+  },
+  {
+      "body": "Do you think OpenAI will collaborate with more universities this year?",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:20:46.401567"
+  },
+  {
+      "body": "The way OpenAI is tackling AI ethics is really impressive.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:20:49.401567"
+  },
+  {
+      "body": "OpenAI's DALL\u00b7E 3 is my new favorite tool for creating content.",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:20:52.401567"
+  },
+  {
+      "body": "OpenAI's DALL\u00b7E 3 is my new favorite tool for creating content.",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:20:55.401567"
+  },
+  {
+      "body": "Sam Altman always seems so calm when discussing existential risks.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:20:58.401567"
+  },
+  {
+      "body": "Sam Altman once said AI could be the biggest unlock for humanity. Do you agree?",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:21:01.401567"
+  },
+  {
+      "body": "Do you think OpenAI will collaborate with more universities this year?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:21:04.401567"
+  },
+  {
+      "body": "I read somewhere that OpenAI is hiring for 100+ roles. That\u2019s insane!",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:21:07.401567"
+  },
+  {
+      "body": "Sam Altman always seems so calm when discussing existential risks.",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:21:10.401567"
+  },
+  {
+      "body": "Sam Altman seems to think AI can solve global challenges. Optimistic or na\u00efve?",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:21:13.401567"
+  },
+  {
+      "body": "The way OpenAI is tackling AI ethics is really impressive.",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:21:16.401567"
+  },
+  {
+      "body": "I read somewhere that OpenAI is hiring for 100+ roles. That\u2019s insane!",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:21:19.401567"
+  },
+  {
+      "body": "OpenAI's GPT keeps getting better, but I\u2019m curious where it goes next.",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:21:22.401567"
+  },
+  {
+      "body": "Sam Altman once said AI could be the biggest unlock for humanity. Do you agree?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:21:25.401567"
+  },
+  {
+      "body": "I read somewhere that OpenAI is hiring for 100+ roles. That\u2019s insane!",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:21:28.401567"
+  },
+  {
+      "body": "Do you think OpenAI will collaborate with more universities this year?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:21:31.401567"
+  },
+  {
+      "body": "OpenAI's DALL\u00b7E 3 is my new favorite tool for creating content.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:21:34.401567"
+  },
+  {
+      "body": "The way OpenAI is tackling AI ethics is really impressive.",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:21:37.401567"
+  },
+  {
+      "body": "Sam Altman once said AI could be the biggest unlock for humanity. Do you agree?",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:21:40.401567"
+  },
+  {
+      "body": "OpenAI's ChatGPT API has made my work so much faster.",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:21:43.401567"
+  },
+  {
+      "body": "Sam Altman always seems so calm when discussing existential risks.",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:21:46.401567"
+  },
+  {
+      "body": "Sam Altman\u2019s vision for universal basic income is tied to AI. Thoughts?",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:21:49.401567"
+  },
+  {
+      "body": "Do you think OpenAI will collaborate with more universities this year?",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:21:52.401567"
+  },
+  {
+      "body": "Has anyone tried OpenAI\u2019s Whisper for transcription? It's amazing.",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:21:55.401567"
+  },
+  {
+      "body": "Do you think GPT-5 will be released this year?",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:21:58.401567"
+  },
+  {
+      "body": "Do you think GPT-5 will be released this year?",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:22:01.401567"
+  },
+  {
+      "body": "Sam Altman was talking about AGI timelines again. Wild stuff!",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:22:04.401567"
+  },
+  {
+      "body": "Do you think OpenAI will collaborate with more universities this year?",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:22:07.401567"
+  },
+  {
+      "body": "I read somewhere that OpenAI is hiring for 100+ roles. That\u2019s insane!",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:22:10.401567"
+  },
+  {
+      "body": "OpenAI Codex is like having a superpowered dev assistant.",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:22:13.401567"
+  },
+  {
+      "body": "Do you think OpenAI will collaborate with more universities this year?",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:22:16.401567"
+  },
+  {
+      "body": "How much do you think OpenAI spends on cloud computing? Must be insane!",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:22:19.401567"
+  },
+  {
+      "body": "Sam Altman always seems so calm when discussing existential risks.",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:22:22.401567"
+  },
+  {
+      "body": "OpenAI Codex is like having a superpowered dev assistant.",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:22:25.401567"
+  },
+  {
+      "body": "Do you think GPT-5 will be released this year?",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:22:28.401567"
+  },
+  {
+      "body": "Has anyone tried OpenAI\u2019s Whisper for transcription? It's amazing.",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:22:31.401567"
+  },
+  {
+      "body": "Sam Altman always seems so calm when discussing existential risks.",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:22:34.401567"
+  },
+  {
+      "body": "Did you see the latest thing Sam Altman said about AI governance?",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:22:37.401567"
+  },
+  {
+      "body": "OpenAI's ChatGPT API has made my work so much faster.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:22:40.401567"
+  },
+  {
+      "body": "Has anyone tried OpenAI\u2019s Whisper for transcription? It's amazing.",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:22:43.401567"
+  },
+  {
+      "body": "OpenAI's research papers are such a good read for understanding AI trends.",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:22:46.401567"
+  },
+  {
+      "body": "Sam Altman seems to think AI can solve global challenges. Optimistic or na\u00efve?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:22:49.401567"
+  },
+  {
+      "body": "Sam Altman always seems so calm when discussing existential risks.",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:22:52.401567"
+  },
+  {
+      "body": "Do you think GPT-5 will be released this year?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:22:55.401567"
+  },
+  {
+      "body": "Sam Altman once said AI could be the biggest unlock for humanity. Do you agree?",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:22:58.401567"
+  },
+  {
+      "body": "Sam Altman seems to think AI can solve global challenges. Optimistic or na\u00efve?",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:23:01.401567"
+  },
+  {
+      "body": "OpenAI's DALL\u00b7E 3 is my new favorite tool for creating content.",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:23:04.401567"
+  },
+  {
+      "body": "OpenAI Codex is like having a superpowered dev assistant.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:23:07.401567"
+  },
+  {
+      "body": "Do you think OpenAI's approach to safety is too cautious or just right?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:23:10.401567"
+  },
+  {
+      "body": "OpenAI Codex is like having a superpowered dev assistant.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:23:13.401567"
+  },
+  {
+      "body": "OpenAI's research papers are such a good read for understanding AI trends.",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:23:16.401567"
+  },
+  {
+      "body": "Do you think OpenAI's approach to safety is too cautious or just right?",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:23:19.401567"
+  },
+  {
+      "body": "OpenAI's DALL\u00b7E 3 is my new favorite tool for creating content.",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:23:22.401567"
+  },
+  {
+      "body": "Do you think OpenAI's approach to safety is too cautious or just right?",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:23:25.401567"
+  },
+  {
+      "body": "Did you see the latest thing Sam Altman said about AI governance?",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:23:28.401567"
+  },
+  {
+      "body": "Sam Altman always seems so calm when discussing existential risks.",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:23:31.401567"
+  },
+  {
+      "body": "OpenAI's DALL\u00b7E 3 is my new favorite tool for creating content.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:23:34.401567"
+  },
+  {
+      "body": "Do you think GPT-5 will be released this year?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:23:37.401567"
+  },
+  {
+      "body": "Sam Altman was talking about AGI timelines again. Wild stuff!",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:23:40.401567"
+  },
+  {
+      "body": "OpenAI's DALL\u00b7E 3 is my new favorite tool for creating content.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:23:43.401567"
+  },
+  {
+      "body": "Has anyone tried OpenAI\u2019s Whisper for transcription? It's amazing.",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:23:46.401567"
+  },
+  {
+      "body": "OpenAI's ChatGPT API has made my work so much faster.",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:23:49.401567"
+  },
+  {
+      "body": "How much do you think OpenAI spends on cloud computing? Must be insane!",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:23:52.401567"
+  },
+  {
+      "body": "Sam Altman seems to think AI can solve global challenges. Optimistic or na\u00efve?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:23:55.401567"
+  },
+  {
+      "body": "Did you see the latest thing Sam Altman said about AI governance?",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:23:58.401567"
+  },
+  {
+      "body": "Sam Altman mentioned regulation is essential, but will it even happen?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:24:01.401567"
+  },
+  {
+      "body": "Sam Altman seems to think AI can solve global challenges. Optimistic or na\u00efve?",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:24:04.401567"
+  },
+  {
+      "body": "Sam Altman\u2019s vision for universal basic income is tied to AI. Thoughts?",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:24:07.401567"
+  },
+  {
+      "body": "OpenAI Codex is like having a superpowered dev assistant.",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:24:10.401567"
+  },
+  {
+      "body": "Sam Altman seems to think AI can solve global challenges. Optimistic or na\u00efve?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:24:13.401567"
+  },
+  {
+      "body": "OpenAI's research papers are such a good read for understanding AI trends.",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:24:16.401567"
+  },
+  {
+      "body": "OpenAI's research papers are such a good read for understanding AI trends.",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:24:19.401567"
+  },
+  {
+      "body": "Sam Altman\u2019s vision for universal basic income is tied to AI. Thoughts?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:24:22.401567"
+  },
+  {
+      "body": "How much do you think OpenAI spends on cloud computing? Must be insane!",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:24:25.401567"
+  },
+  {
+      "body": "OpenAI's research papers are such a good read for understanding AI trends.",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:24:28.401567"
+  },
+  {
+      "body": "Sam Altman mentioned regulation is essential, but will it even happen?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:24:31.401567"
+  },
+  {
+      "body": "Has anyone tried OpenAI\u2019s Whisper for transcription? It's amazing.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:24:34.401567"
+  },
+  {
+      "body": "OpenAI's research papers are such a good read for understanding AI trends.",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:24:37.401567"
+  },
+  {
+      "body": "Did you see the latest thing Sam Altman said about AI governance?",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:24:40.401567"
+  },
+  {
+      "body": "Do you think OpenAI's approach to safety is too cautious or just right?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:24:43.401567"
+  },
+  {
+      "body": "Sam Altman once said AI could be the biggest unlock for humanity. Do you agree?",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:24:46.401567"
+  },
+  {
+      "body": "Sam Altman was talking about AGI timelines again. Wild stuff!",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:24:49.401567"
+  },
+  {
+      "body": "Has anyone tried OpenAI\u2019s Whisper for transcription? It's amazing.",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:24:52.401567"
+  },
+  {
+      "body": "Sam Altman once said AI could be the biggest unlock for humanity. Do you agree?",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:24:55.401567"
+  },
+  {
+      "body": "Has anyone tried OpenAI\u2019s Whisper for transcription? It's amazing.",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:24:58.401567"
+  },
+  {
+      "body": "Sam Altman\u2019s vision for universal basic income is tied to AI. Thoughts?",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:25:01.401567"
+  },
+  {
+      "body": "How much do you think OpenAI spends on cloud computing? Must be insane!",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:25:04.401567"
+  },
+  {
+      "body": "Sam Altman always seems so calm when discussing existential risks.",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:25:07.401567"
+  },
+  {
+      "body": "OpenAI's GPT keeps getting better, but I\u2019m curious where it goes next.",
+      "user": "r4t7c07089q2479",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:25:10.401567"
+  },
+  {
+      "body": "I wonder if OpenAI's focus will shift more towards enterprise solutions.",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:25:13.401567"
+  },
+  {
+      "body": "Sam Altman always seems so calm when discussing existential risks.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:25:16.401567"
+  },
+  {
+      "body": "OpenAI's research papers are such a good read for understanding AI trends.",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:25:19.401567"
+  },
+  {
+      "body": "OpenAI Codex is like having a superpowered dev assistant.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:25:22.401567"
+  },
+  {
+      "body": "Did you see the latest thing Sam Altman said about AI governance?",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:25:25.401567"
+  },
+  {
+      "body": "Sam Altman seems to think AI can solve global challenges. Optimistic or na\u00efve?",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:25:28.401567"
+  },
+  {
+      "body": "Did you see the latest thing Sam Altman said about AI governance?",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:25:31.401567"
+  },
+  {
+      "body": "Do you think OpenAI's approach to safety is too cautious or just right?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:25:34.401567"
+  },
+  {
+      "body": "Sam Altman once said AI could be the biggest unlock for humanity. Do you agree?",
+      "user": "8w59al64sg5jx84",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:25:37.401567"
+  },
+  {
+      "body": "OpenAI Codex is like having a superpowered dev assistant.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:25:40.401567"
+  },
+  {
+      "body": "How much do you think OpenAI spends on cloud computing? Must be insane!",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:25:43.401567"
+  },
+  {
+      "body": "OpenAI's ChatGPT API has made my work so much faster.",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:25:46.401567"
+  },
+  {
+      "body": "Do you think OpenAI's approach to safety is too cautious or just right?",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:25:49.401567"
+  },
+  {
+      "body": "OpenAI's ChatGPT API has made my work so much faster.",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:25:52.401567"
+  },
+  {
+      "body": "Sam Altman once said AI could be the biggest unlock for humanity. Do you agree?",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:25:55.401567"
+  },
+  {
+      "body": "How much do you think OpenAI spends on cloud computing? Must be insane!",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:25:58.401567"
+  },
+  {
+      "body": "OpenAI Codex is like having a superpowered dev assistant.",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:26:01.401567"
+  },
+  {
+      "body": "OpenAI's DALL\u00b7E 3 is my new favorite tool for creating content.",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:26:04.401567"
+  },
+  {
+      "body": "Sam Altman\u2019s vision for universal basic income is tied to AI. Thoughts?",
+      "user": "69mn4i30zji1b88",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:26:07.401567"
+  },
+  {
+      "body": "Do you think OpenAI's approach to safety is too cautious or just right?",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:26:10.401567"
+  },
+  {
+      "body": "OpenAI's GPT keeps getting better, but I\u2019m curious where it goes next.",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:26:13.401567"
+  },
+  {
+      "body": "OpenAI's GPT keeps getting better, but I\u2019m curious where it goes next.",
+      "user": "g0048ghv9r5dc39",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:26:16.401567"
+  },
+  {
+      "body": "Sam Altman\u2019s vision for universal basic income is tied to AI. Thoughts?",
+      "user": "86d5j69l7062510",
+      "channel": "ko67ktf7oxi6jyh",
+      "timestamp": "2025-01-13T23:26:19.401567"
+  }
+  ];
+
+  // Get the API URL from config
+  promptApiUrl = config.APP.PROMPT_API_URL;
 
   init() {
     super.init(...arguments);
@@ -551,6 +1770,94 @@ export default class DashboardController extends Controller {
   @action
   closeMobileMenu() {
     this.isMobileMenuOpen = false;
+  }
+
+  @action
+  toggleAIColumn() {
+    this.isAIColumnVisible = !this.isAIColumnVisible;
+  }
+
+  @action
+  closeAIColumn() {
+    this.isAIColumnVisible = false;
+  }
+
+  @action
+  updateAIMessageText(event) {
+    this.aiMessageText = event.target.value;
+  }
+
+  @action
+  async sendAIMessage() {
+    if (!this.aiMessageText.trim()) return;
+    
+    this.isAILoading = true;
+    
+    this.agentMessages = [...this.agentMessages, {
+      isAgent: false,
+      message: this.aiMessageText,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      sender: "User"
+    }];
+
+    const userPrompt = this.aiMessageText;
+    this.aiMessageText = '';
+
+    try {
+      const response = await fetch(`${this.promptApiUrl}/query`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: userPrompt
+        })
+      });
+
+      const data = await response.json();
+
+      this.agentMessages = [...this.agentMessages, {
+        isAgent: true,
+        message: data.response,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        sender: "Agent Devin"
+      }];
+    } catch (error) {
+      console.error('AI response error:', error);
+    } finally {
+      this.isAILoading = false;
+    }
+  }
+
+  @action
+  async populateMessages() {
+    let final = [];
+    try {
+      for (const message of this.sampleMessages) {
+        let randomUser = ["5c8yk4a3o6xa7a9", "aaz34oj695r210n", "z6145v3sjq5ls94", "z6145v3sjq5ls94", "7anku0k971s83m3"][Math.floor(Math.random() * 5)];
+
+        let msg = {
+          body:message.body, 
+          channelId:"wyh5apa9svzcsez", 
+          directMessageId: null, 
+          file: null,
+          user: randomUser
+        }
+        final.push(msg);
+
+
+        await this.pocketbase.createMessage({
+          body:message.body, 
+          channelId:"wyh5apa9svzcsez", 
+          directMessageId: null, 
+          file: null,
+          user: randomUser
+        });
+      }
+      console.log(JSON.stringify(final));
+    } catch (error) {
+      console.error('Failed to populate messages:', error);
+    }
   }
 } 
 
