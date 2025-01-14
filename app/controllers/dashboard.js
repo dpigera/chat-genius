@@ -2,6 +2,7 @@ import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
+import config from '../config/environment';
 
 export default class DashboardController extends Controller {
   @service router;
@@ -1271,6 +1272,9 @@ export default class DashboardController extends Controller {
   }
   ];
 
+  // Get the API URL from config
+  promptApiUrl = config.APP.PROMPT_API_URL;
+
   init() {
     super.init(...arguments);
 
@@ -1787,10 +1791,8 @@ export default class DashboardController extends Controller {
   async sendAIMessage() {
     if (!this.aiMessageText.trim()) return;
     
-    // Set loading state
     this.isAILoading = true;
     
-    // Add user message to UI
     this.agentMessages = [...this.agentMessages, {
       isAgent: false,
       message: this.aiMessageText,
@@ -1799,10 +1801,10 @@ export default class DashboardController extends Controller {
     }];
 
     const userPrompt = this.aiMessageText;
-    this.aiMessageText = ''; // Clear input
+    this.aiMessageText = '';
 
     try {
-      const response = await fetch('http://localhost:3000/query', {
+      const response = await fetch(`${this.promptApiUrl}/query`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1814,7 +1816,6 @@ export default class DashboardController extends Controller {
 
       const data = await response.json();
 
-      // Add AI response to UI
       this.agentMessages = [...this.agentMessages, {
         isAgent: true,
         message: data.response,

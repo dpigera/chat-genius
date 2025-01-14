@@ -13,6 +13,9 @@ module.exports = function (environment) {
     },
 
     APP: {
+      PROMPT_API_URL: environment === 'production' 
+        ? 'https://chatgenius-prompt-server.fly.dev'
+        : 'http://localhost:3000'
     },
   };
 
