@@ -1784,7 +1784,7 @@ export default class DashboardController extends Controller {
   }
 
   @action
-  sendAIMessage() {
+  async sendAIMessage() {
     if (!this.aiMessageText.trim()) return;
     
     // Add user message to UI
@@ -1795,8 +1795,32 @@ export default class DashboardController extends Controller {
       sender: "User"
     }];
 
-    // Clear the input
-    this.aiMessageText = '';
+    const userPrompt = this.aiMessageText;
+    this.aiMessageText = ''; // Clear input
+
+    try {
+      const response = await fetch('http://localhost:3000/query', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: userPrompt
+        })
+      });
+
+      const data = await response.json();
+
+      // Add AI response to UI
+      this.agentMessages = [...this.agentMessages, {
+        isAgent: true,
+        message: data.response,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        sender: "Agent Devin"
+      }];
+    } catch (error) {
+      console.error('AI response error:', error);
+    }
   }
 
   @action
