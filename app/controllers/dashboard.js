@@ -60,7 +60,7 @@ export default class DashboardController extends Controller {
 
   @tracked agentMessages = [{
     isAgent: true,
-    message: "Hey there! 👋 I'm Agent Devin, your AI assistant. How can I help you today?",
+    message: "Hi! I'm Devin, an AI assistant at ChatGenius. I can do things like search for information and summarize records. What can I help you with?",
     timestamp: "11:30 AM",
     sender: "Agent Devin"
   }];
@@ -1787,6 +1787,9 @@ export default class DashboardController extends Controller {
   async sendAIMessage() {
     if (!this.aiMessageText.trim()) return;
     
+    // Set loading state
+    this.isAILoading = true;
+    
     // Add user message to UI
     this.agentMessages = [...this.agentMessages, {
       isAgent: false,
@@ -1820,6 +1823,8 @@ export default class DashboardController extends Controller {
       }];
     } catch (error) {
       console.error('AI response error:', error);
+    } finally {
+      this.isAILoading = false;
     }
   }
 

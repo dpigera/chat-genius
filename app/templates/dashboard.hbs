@@ -41,12 +41,12 @@
         >
           Show AI
         </button>
-        <button 
+        {{!-- <button 
           class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-500 transition-colors"
           {{on "click" this.populateMessages}}
         >
           Populate
-        </button>
+        </button> --}}
       </div>
     </div>
 
@@ -553,7 +553,7 @@
 
     {{#if this.isAIColumnVisible}}
       <div class="w-96 border-l border-gray-200 flex flex-col h-full">
-        <div class="p-4 border-b border-gray-200 bg-white z-10">
+        <div class="p-4 border-b border-gray-200 bg-gray-100 z-10">
           <div class="flex justify-end mb-3">
           <button 
             class="text-gray-400 hover:text-gray-600"
@@ -607,20 +607,21 @@
         <div class="border-t border-gray-200 p-4 bg-white">
           <div class="mb-3">
             <textarea 
-              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none disabled:bg-gray-50 disabled:text-gray-500"
               rows="3"
-              placeholder="Ask a question..."
+              placeholder="Message Agent Devin..."
               value={{this.aiMessageText}}
+              disabled={{this.isAILoading}}
               {{on "input" this.updateAIMessageText}}
             ></textarea>
           </div>
           <div class="flex justify-end">
             <button 
               class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={{not this.aiMessageText}}
+              disabled={{or this.isAILoading (not this.aiMessageText)}}
               {{on "click" this.sendAIMessage}}
             >
-              Post
+              {{if this.isAILoading "Thinking..." "Post"}}
             </button>
           </div>
         </div>
