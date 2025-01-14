@@ -1833,11 +1833,11 @@ export default class DashboardController extends Controller {
     let final = [];
     try {
       for (const message of this.sampleMessages) {
-        let randomUser = ["g0048ghv9r5dc39", "69mn4i30zji1b88", "8w59al64sg5jx84", "r4t7c07089q2479", "86d5j69l7062510"][Math.floor(Math.random() * 5)];
+        let randomUser = ["5c8yk4a3o6xa7a9", "aaz34oj695r210n", "z6145v3sjq5ls94", "z6145v3sjq5ls94", "7anku0k971s83m3"][Math.floor(Math.random() * 5)];
 
         let msg = {
           body:message.body, 
-          channelId:message.channel, 
+          channelId:"wyh5apa9svzcsez", 
           directMessageId: null, 
           file: null,
           user: randomUser
@@ -1847,7 +1847,7 @@ export default class DashboardController extends Controller {
 
         await this.pocketbase.createMessage({
           body:message.body, 
-          channelId:message.channel, 
+          channelId:"wyh5apa9svzcsez", 
           directMessageId: null, 
           file: null,
           user: randomUser
