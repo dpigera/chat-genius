@@ -13,7 +13,7 @@
             </div>
             <input
               type="text"
-              class="w-full pl-10 pr-4 py-2 rounded-lg bg-purple-500 border border-purple-500 focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-white text-white"
+              class="text-sm w-full pl-10 pr-4 py-2 rounded-lg bg-purple-500 border border-purple-500 focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-white text-white"
               placeholder="Search..."
               value={{this.searchText}}
               {{on "input" this.updateSearchText}}
@@ -36,24 +36,24 @@
       <div class="w-96">{{!-- Empty div for flex spacing --}}</div>
       <div class="flex items-center space-x-3">
         <button 
-          class="px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-600 transition-colors"
+          class="text-sm px-4 py-2 bg-purple-700 text-white rounded-lg hover:bg-purple-600 transition-colors"
           {{on "click" this.toggleAIColumn}}
         >
           Show AI
         </button>
-        <button 
+        {{!-- <button 
           class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-500 transition-colors"
           {{on "click" this.populateMessages}}
         >
           Populate
-        </button>
+        </button> --}}
       </div>
     </div>
 
     {{#if this.isSearchPopupVisible}}
       <div class="absolute left-[230px] mt-2 w-96 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
         <div class="flex justify-between items-center p-4 border-b border-gray-200">
-          <span class="text-base text-gray-700">Search Results</span>
+          <span class="text-sm text-gray-700">Search Results</span>
           <button 
             class="text-gray-400 hover:text-gray-600"
             {{on "click" this.clearSearch}}
@@ -76,7 +76,7 @@
           {{else}}
             {{#if this.searchResults.users.length}}
               <div class="mb-4">
-                <h3 class="text-base font-semibold text-gray-500 mb-2">Users</h3>
+                <h3 class="text-sm font-semibold text-gray-500 mb-2">Users</h3>
                 <div class="space-y-1">
                   {{#each this.searchResults.users as |user|}}
                     <div 
@@ -86,7 +86,7 @@
                       <div class="w-8 h-8 bg-purple-200 rounded-full flex items-center justify-center text-purple-700 text-xs">
                         {{initials user.name}}
                       </div>
-                      <span class="text-base text-gray-900">{{user.name}}</span>
+                      <span class="text-sm text-gray-900">{{user.name}}</span>
                     </div>
                   {{/each}}
                 </div>
@@ -99,7 +99,7 @@
               {{/if}}
               
               <div class="mt-4">
-                <h3 class="text-base font-semibold text-gray-500 mb-2">Messages</h3>
+                <h3 class="text-sm font-semibold text-gray-500 mb-2">Messages</h3>
                 <div class="space-y-3">
                   {{#each this.searchResults.messages as |message|}}
                     <div 
@@ -110,10 +110,10 @@
                         <div class="w-8 h-8 bg-purple-200 rounded-full flex items-center justify-center text-purple-700 text-xs">
                           {{initials message.expand.user.name}}
                         </div>
-                        <span class="text-base font-medium text-gray-900">{{message.expand.user.name}}</span>
-                        <span class="text-base text-gray-500">{{relative-time message.created}}</span>
+                        <span class="text-sm font-medium text-gray-900">{{message.expand.user.name}}</span>
+                        <span class="text-sm text-gray-500">{{relative-time message.created}}</span>
                       </div>
-                      <p class="text-base text-gray-600 ml-11 -mt-2">{{message.body}}</p>
+                      <p class="text-sm text-gray-600 ml-11 -mt-2">{{message.body}}</p>
                     </div>
                   {{/each}}
                 </div>
@@ -121,7 +121,7 @@
             {{/if}}
 
             {{#unless (or this.searchResults.users.length this.searchResults.messages.length)}}
-              <p class="text-base text-gray-500 text-center">No results found</p>
+              <p class="text-sm text-gray-500 text-center">No results found</p>
             {{/unless}}
           {{/if}}
         </div>
@@ -177,7 +177,7 @@
 
       <div class="p-4 pt-8 pl-6">
         {{!-- Channels Section --}}
-        <div class="mb-6 text-base">
+        <div class="mb-6 text-sm">
           <h2 class="font-semibold text-purple-200 mb-2">Channels</h2>
           {{#if this.channels}}
             <div class="space-y-1">
@@ -207,9 +207,9 @@
 
         {{!-- Direct Messages Section --}}
         <div>
-          <h2 class="text-base font-semibold text-purple-200 mb-2">Direct Messages</h2>
+          <h2 class="text-sm font-semibold text-purple-200 mb-2">Direct Messages</h2>
           {{#if this.directMessages}}
-            <div class="space-y-1">
+            <div class="space-y-1 text-sm">
               {{#each this.directMessages as |user|}}
                 <div 
                   class="px-2 py-1 rounded cursor-pointer {{if (eq user.id this.selectedUserId) 'bg-purple-700' 'hover:bg-purple-700'}} flex items-center"
@@ -231,7 +231,7 @@
         </div>
 
         <button 
-          class="mt-1 w-full text-left px-2 py-1 rounded cursor-pointer text-white hover:text-white hover:bg-purple-700 transition-colors"
+          class="mt-1 w-full text-sm text-left px-2 py-1 rounded cursor-pointer text-white hover:text-white hover:bg-purple-700 transition-colors"
           {{on "click" this.showAddDirectMessageModal}}
         >
           + Add User
@@ -261,18 +261,18 @@
                 {{/if}}
                 <div class="flex-1">
                   <div class="flex items-baseline">
-                    <span class="font-bold">{{message.expand.user.name}}</span>
-                    <span class="ml-2 text-base text-gray-400">{{relative-time message.created}}</span>
+                    <span class="font-bold text-sm">{{message.expand.user.name}}</span>
+                    <span class="ml-2 text-sm text-gray-400">{{relative-time message.created}}</span>
                   </div>
-                  <p class="mt-1">{{message.body}}</p>
+                  <p class="mt-1 text-sm">{{message.body}}</p>
                   
                   {{#if message.file}}
                     <div class="mt-2 border border-gray-200 rounded-lg p-3">
-                      <div class="text-base text-gray-600 mb-2">{{message.file}}</div>
+                      <div class="text-sm text-gray-600 mb-2">{{message.file}}</div>
                       {{#if (is-image message.file)}}
                         <div class="space-y-2">
                           <img src={{message.file}} alt={{message.file}} class="max-h-32 rounded-lg">
-                          <a href={{message.file}} target="_blank" class="text-blue-500 hover:underline flex items-center">
+                          <a href={{message.file}} target="_blank" class="text-sm text-blue-500 hover:underline flex items-center">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -281,7 +281,7 @@
                           </a>
                         </div>
                       {{else}}
-                        <a href={{message.file}} target="_blank" class="text-blue-500 hover:underline flex items-center">
+                        <a href={{message.file}} target="_blank" class="text-sm text-blue-500 hover:underline flex items-center">
                           <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                           </svg>
@@ -295,7 +295,7 @@
                     {{!-- <button class="text-gray-400 hover:text-red-500">❤️</button> --}}
                     <span>
                       <button 
-                        class="text-base {{if (eq this.selectedMessage.id message.id) 'text-purple-800 font-medium' 'text-purple-600'}} hover:underline"
+                        class="text-sm {{if (eq this.selectedMessage.id message.id) 'text-purple-800 font-medium' 'text-purple-600'}} hover:underline"
                         {{on "click" (fn this.showThread message)}}
                       >
                         {{#if (eq message.replyCount 0)}}
@@ -309,11 +309,11 @@
                         {{/if}}
                       </button>
                     </span>
-                    <span class="text-base text-purple-600">•</span>
+                    <span class="text-sm text-purple-600">•</span>
                     {{!-- Quick Reactions --}}
                     <div class="relative">
                       <button 
-                        class="text-base text-purple-600 font-medium hover:text-purple-800"
+                        class="text-sm text-purple-600 font-medium hover:text-purple-800"
                         {{on "click" (fn (mut this.activeReactionMessageId) message.id)}}
                       >
                         React
@@ -395,7 +395,7 @@
       <div class="border-t border-gray-200 p-4 bg-white">
         <div class="mb-3">
           <textarea 
-            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+            class="w-full p-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
             rows="3"
             placeholder="Type your message here..."
             value={{this.messageText}}
@@ -452,7 +452,7 @@
       <div class="hidden md:block w-96 border-l border-gray-200 bg-gray-50">
         <div class="h-full flex flex-col">
           <div class="px-4 py-5 border-b border-gray-200 flex justify-between items-center">
-            <h3 class="text-base font-bold">Thread</h3>
+            <h3 class="text-sm font-bold">Thread</h3>
             <button 
               class="text-gray-400 hover:text-gray-600"
               {{on "click" this.closeThread}}
@@ -467,15 +467,15 @@
             <div class="flex-1 overflow-y-auto">
               <div class="p-5">
                 <div class="flex space-x-4">
-                  <div class="w-10 h-10 bg-purple-200 rounded-full flex-shrink-0 flex items-center justify-center text-base">
+                  <div class="w-10 h-10 bg-purple-200 rounded-full flex-shrink-0 flex items-center justify-center text-sm">
                     {{initials this.selectedMessage.expand.user.name}}
                   </div>
                   <div class="flex-1">
                     <div class="flex items-baseline">
-                      <span class="font-bold text-base">{{this.selectedMessage.expand.user.name}}</span>
-                      <span class="ml-2 text-base text-gray-400">{{relative-time this.selectedMessage.updated}}</span>
+                      <span class="font-bold text-sm">{{this.selectedMessage.expand.user.name}}</span>
+                      <span class="ml-2 text-sm text-gray-400">{{relative-time this.selectedMessage.updated}}</span>
                     </div>
-                    <p class="mt-1 text-base">{{this.selectedMessage.body}}</p>
+                    <p class="mt-1 text-sm">{{this.selectedMessage.body}}</p>
                   </div>
                 </div>
               </div>
@@ -499,15 +499,15 @@
                   <div class="space-y-4">
                     {{#each this.replies as |reply|}}
                       <div class="flex space-x-4">
-                        <div class="w-8 h-8 bg-purple-200 rounded-full flex-shrink-0 flex items-center justify-center text-base">
+                        <div class="w-8 h-8 bg-purple-200 rounded-full flex-shrink-0 flex items-center justify-center text-sm">
                           {{initials reply.expand.user.name}}
                         </div>
                         <div class="flex-1">
                           <div class="flex items-baseline">
-                            <span class="font-bold text-base">{{reply.expand.user.name}}</span>
-                            <span class="ml-2 text-base text-gray-400">{{relative-time reply.created}}</span>
+                            <span class="font-bold text-sm">{{reply.expand.user.name}}</span>
+                            <span class="ml-2 text-sm text-gray-400">{{relative-time reply.created}}</span>
                           </div>
-                          <p class="mt-1 text-base">{{reply.body}}</p>
+                          <p class="mt-1 text-sm">{{reply.body}}</p>
                         </div>
                       </div>
                     {{/each}}
@@ -519,7 +519,7 @@
 
               <div class="p-4">
                 <textarea 
-                  class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-base"
+                  class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-sm"
                   rows="2"
                   placeholder="Reply to thread..."
                   value={{this.replyText}}
@@ -547,7 +547,7 @@
                   </div>
 
                   <button 
-                    class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed text-base"
+                    class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                     disabled={{not this.replyText}}
                     {{on "click" this.postReply}}
                   >
@@ -582,15 +582,15 @@
                 class="w-24 h-24 rounded-xl object-cover border border-gray-300"
               >
               <div class="flex flex-col">
-                <h2 class="text-lg font-semibold">Agent Devin</h2>
-                <span class="mt-1 px-2 py-1 bg-gray-100 text-gray-600 text-sm font-medium rounded-md uppercase self-start flex items-center">
+                <h2 class="text-lg font-semibold text-sm">Agent Devin</h2>
+                <span class="mt-1 px-2 py-1 bg-gray-300 text-gray-600 text-sm font-medium rounded-md uppercase self-start flex items-center">
                   AI APP
                   <span class="ml-1.5 w-2 h-2 bg-green-500 rounded-full"></span>
                 </span>
               </div>
             </div>
           </div>
-          <p class="text-gray-500 text-base mt-6">Your ChatGenius AI is now on demand!</p>
+          <p class="text-gray-500 text-sm mt-6">Your ChatGenius AI is now on demand!</p>
         </div>
 
         {{!-- Scrollable Messages --}}
@@ -604,10 +604,10 @@
               </div>
               <div class="flex-1">
                 <div class="flex items-baseline">
-                  <span class="font-bold">{{message.sender}}</span>
+                  <span class="font-bold text-sm">{{message.sender}}</span>
                   <span class="ml-2 text-sm text-gray-400">{{message.timestamp}}</span>
                 </div>
-                <p class="mt-1">{{message.message}}</p>
+                <p class="mt-1 text-sm">{{message.message}}</p>
               </div>
             </div>
           {{/each}}
@@ -617,7 +617,7 @@
         <div class="border-t border-gray-200 p-4 bg-white">
           <div class="mb-3">
             <textarea 
-              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none disabled:bg-gray-50 disabled:text-gray-500"
+              class="text-sm w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none disabled:bg-gray-50 disabled:text-gray-500"
               rows="3"
               placeholder="Message Agent Devin..."
               value={{this.aiMessageText}}
@@ -652,7 +652,7 @@
     <div class="h-full relative">
       {{!-- Header --}}
       <div class="flex justify-between items-center p-6 border-b border-gray-200">
-        <h2 class="text-base font-semibold text-gray-900">
+        <h2 class="text-sm font-semibold text-gray-900">
           {{if (eq this.selectedSearchResult.content undefined) "User Details" "Message Details"}}
         </h2>
         <button 
@@ -675,7 +675,7 @@
               <div class="w-8 h-8 bg-purple-200 rounded-full flex items-center justify-center text-purple-700 text-xs">
                 {{this.selectedSearchResult.avatar}}
               </div>
-              <span class="text-base text-gray-900">{{this.selectedSearchResult.name}}</span>
+              <span class="text-sm text-gray-900">{{this.selectedSearchResult.name}}</span>
             </div>
           {{else}}
             {{!-- Message Result --}}
@@ -684,11 +684,11 @@
                 <div class="w-8 h-8 bg-purple-200 rounded-full flex items-center justify-center text-purple-700 text-xs">
                   {{this.selectedSearchResult.user.avatar}}
                 </div>
-                <span class="text-base font-medium text-gray-900">{{this.selectedSearchResult.user.name}}</span>
+                <span class="text-sm font-medium text-gray-900">{{this.selectedSearchResult.user.name}}</span>
               </div>
               <div class="ml-11">
-                <span class="text-base text-gray-500">{{this.selectedSearchResult.timestamp}}</span>
-                <p class="text-base text-gray-900 mt-2">{{this.selectedSearchResult.content}}</p>
+                <span class="text-sm text-gray-500">{{this.selectedSearchResult.timestamp}}</span>
+                <p class="text-sm text-gray-900 mt-2">{{this.selectedSearchResult.content}}</p>
               </div>
             </div>
           {{/if}}
@@ -696,7 +696,7 @@
 
         {{!-- Right Column (75%) --}}
         <div class="flex-1 p-6">
-          <p class="text-base text-gray-500">Search results for detailed view goes here...</p>
+          <p class="text-sm text-gray-500">Search results for detailed view goes here...</p>
         </div>
       </div>
     </div>
@@ -707,7 +707,7 @@
   <div class="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
     <div class="bg-white rounded-lg p-7 w-[560px] max-w-[90%] font-inter">
       <div class="flex justify-between items-center mb-6">
-        <h2 class="text-base font-bold text-black">Add Channel</h2>
+        <h2 class="text-sm font-bold text-black">Add Channel</h2>
         <button 
           class="text-gray-500 hover:text-gray-700 text-xl"
           {{on "click" this.hideAddChannelModal}}
@@ -718,32 +718,32 @@
 
       <div class="space-y-6">
         <div class="flex flex-col">
-          <label class="mb-2 text-black text-base">Channel Name</label>
+          <label class="mb-2 text-black text-sm">Channel Name</label>
           <input 
             type="text" 
-            class="w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 text-base"
+            class="w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 text-sm"
             {{on "input" this.updateChannelName}}
             value={{this.newChannelName}}
           >
         </div>
 
         <div class="flex flex-col">
-          <label class="mb-2 text-black text-base">Select Users</label>
+          <label class="mb-2 text-black text-sm">Select Users</label>
           <select 
             multiple 
-            class="w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 text-base [&>option:checked]:bg-purple-500 [&>option:checked]:text-white [&>option]:cursor-pointer"
+            class="w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 text-sm [&>option:checked]:bg-purple-500 [&>option:checked]:text-white [&>option]:cursor-pointer"
             {{on "change" this.updateSelectedUsers}}
           >
             {{#each this.users as |user|}}
               {{#if (not-eq user.id this.pocketbase.currentUser.id)}}
-                <option class="hover:bg-purple-100 p-2 text-base" user-id={{user.id}}>{{user.name}}</option>
+                <option class="hover:bg-purple-100 p-2 text-sm" user-id={{user.id}}>{{user.name}}</option>
               {{/if}}
             {{/each}}
           </select>
         </div>
 
         <button 
-          class="w-full py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:bg-purple-200 disabled:cursor-not-allowed text-base"
+          class="w-full py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:bg-purple-200 disabled:cursor-not-allowed text-sm"
           {{on "click" this.createChannel}}
           disabled={{not this.isValidChannel}}
         >
@@ -758,7 +758,7 @@
   <div class="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
     <div class="bg-white rounded-lg p-7 w-[560px] max-w-[90%] font-inter">
       <div class="flex justify-between items-center mb-6">
-        <h2 class="text-base font-bold text-black">Direct Message</h2>
+        <h2 class="text-sm font-bold text-black">Direct Message</h2>
         <button 
           class="text-gray-500 hover:text-gray-700 text-xl"
           {{on "click" this.hideAddDirectMessageModal}}
@@ -769,17 +769,17 @@
 
       <div class="space-y-6">
         <div class="flex flex-col">
-          <label class="mb-2 text-black text-base">Select Users</label>
+          <label class="mb-2 text-black text-sm">Select Users</label>
           <select 
             multiple 
-            class="w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 text-base [&>option:checked]:bg-purple-500 [&>option:checked]:text-white [&>option]:cursor-pointer"
+            class="w-full px-3 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 text-sm [&>option:checked]:bg-purple-500 [&>option:checked]:text-white [&>option]:cursor-pointer"
             {{on "change" this.updateSelectedDMUsers}}
           >
             {{#each this.users as |user|}}
               {{#if (not-eq user.id this.pocketbase.currentUser.id)}}
                 <option 
                   value={{user.id}}
-                  class="hover:bg-purple-100 p-2 text-base"
+                  class="hover:bg-purple-100 p-2 text-sm"
                 >
                   {{user.name}}
                 </option>
@@ -789,7 +789,7 @@
         </div>
 
         <button 
-          class="w-full py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:bg-purple-200 disabled:cursor-not-allowed text-base"
+          class="w-full py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:bg-purple-200 disabled:cursor-not-allowed text-sm"
           {{on "click" this.createDirectMessage}}
           disabled={{not this.isValidDirectMessage}}
         >

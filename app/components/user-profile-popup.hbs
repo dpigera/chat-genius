@@ -10,8 +10,8 @@
             {{initials @user.name}}
           </div>
           <div>
-            <div class="font-bold">{{@user.name}}</div>
-            <div class="text-base text-gray-500">ChatGenius User</div>
+            <div class="text-sm font-bold">{{@user.name}}</div>
+            <div class="text-sm text-gray-500">ChatGenius User</div>
           </div>
         </div>
         <button 
@@ -31,7 +31,7 @@
       <div class="relative pt-4">
         <div class="relative pb-6">
           <select 
-            class="w-full px-3 py-2 bg-white text-gray-900 rounded-md border border-gray-300 cursor-pointer focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 appearance-none pl-8"
+            class="text-sm w-full px-3 py-2 bg-white text-gray-900 rounded-md border border-gray-300 cursor-pointer focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50 appearance-none pl-8"
             {{on "change" this.updateUserStatus}}
           >
             <option value="active" selected={{eq this.currentStatus "active"}}>
@@ -64,7 +64,7 @@
       {{!-- Logout Section --}}
       <div>
         <button 
-          class="w-full text-left px-3 py-2 rounded hover:bg-gray-100 text-red-600 flex items-center"
+          class="text-sm w-full text-left px-3 py-2 rounded hover:bg-gray-100 text-red-600 flex items-center"
           {{on "click" @onLogout}}
         >
           <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
