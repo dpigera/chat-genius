@@ -434,6 +434,11 @@ export default class DashboardController extends Controller {
     try {
       const messages = await this.pocketbase.getChannelMessages(this.selectedChannelId);
       messages.forEach(message => {
+        if (message.file) {
+          let host = config.APP.API_HOST;
+          let url = `${host}/api/files/${message.collectionId}/${message.id}/${message.file}?token=`;
+          message.fileUrl = url;  
+        }
         if (message?.expand?.user?.avatar) {
           let host = config.APP.API_HOST;
           let userId = message.expand.user.id;
