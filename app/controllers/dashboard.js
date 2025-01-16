@@ -516,9 +516,16 @@ export default class DashboardController extends Controller {
 
   @action
   scrollToBottom() {
-    const messageContainer = document.querySelector('.messages-container');
-    if (messageContainer) {
-      messageContainer.scrollTop = messageContainer.scrollHeight;
+    // Scroll AI messages
+    const aiMessagesContainer = document.querySelector('.ai-messages-container');
+    if (aiMessagesContainer) {
+      aiMessagesContainer.scrollTop = aiMessagesContainer.scrollHeight;
+    }
+    
+    // Scroll main messages
+    const mainMessagesContainer = document.querySelector('.messages-container');
+    if (mainMessagesContainer) {
+      mainMessagesContainer.scrollTop = mainMessagesContainer.scrollHeight;
     }
   }
 
@@ -820,6 +827,9 @@ export default class DashboardController extends Controller {
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       sender: "User"
     }];
+    
+    // Scroll all containers after user message
+    this.scrollToBottom();
 
     const userPrompt = this.aiMessageText;
     this.aiMessageText = '';
@@ -843,6 +853,12 @@ export default class DashboardController extends Controller {
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         sender: "Agent Devin"
       }];
+      
+      // Use setTimeout to ensure DOM is updated before scrolling all containers
+      setTimeout(() => {
+        this.scrollToBottom();
+      }, 0);
+
     } catch (error) {
       console.error('AI response error:', error);
     } finally {

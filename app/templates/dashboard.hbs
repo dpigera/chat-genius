@@ -594,7 +594,7 @@
         </div>
 
         {{!-- Scrollable Messages --}}
-        <div class="flex-1 overflow-y-auto p-6 space-y-5">
+        <div class="flex-1 overflow-y-auto p-6 space-y-5 ai-messages-container">
           {{#each this.agentMessages as |message|}}
             <div class="flex space-x-4">
               <div class="w-10 h-10 rounded-lg {{if message.isAgent 'bg-purple-200' 'bg-gray-200'}} flex-shrink-0 flex items-center justify-center">
