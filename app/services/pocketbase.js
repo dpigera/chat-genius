@@ -3,6 +3,7 @@ import PocketBase from 'pocketbase';
 import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
 import config from '../config/environment';
+import { ReplicationTimeStatus } from '@aws-sdk/client-s3';
 
 export default class PocketbaseService extends Service {
   @tracked currentUser = null;
@@ -253,7 +254,8 @@ export default class PocketbaseService extends Service {
           body: data.body,
           user: data.user? data.user : this.currentUser.id,
           channel: data.channelId,
-          directMessage: data.directMessageId
+          directMessage: data.directMessageId,
+          timestamp: data.timestamp
         };
 
         const record = await this.client.collection('messages').create(messageData);
