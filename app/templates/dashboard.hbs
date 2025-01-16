@@ -264,7 +264,7 @@
                     <span class="font-bold text-sm">{{message.expand.user.name}}</span>
                     <span class="ml-2 text-sm text-gray-400">{{relative-time message.created}}</span>
                   </div>
-                  <p class="mt-1 text-sm">{{message.body}}</p>
+                  <p class="mt-1 text-sm whitespace-pre-wrap">{{message.body}}</p>
                   
                   {{#if message.file}}
                     <div class="mt-2 border border-gray-200 rounded-lg p-3">
@@ -507,7 +507,7 @@
                             <span class="font-bold text-sm">{{reply.expand.user.name}}</span>
                             <span class="ml-2 text-sm text-gray-400">{{relative-time reply.created}}</span>
                           </div>
-                          <p class="mt-1 text-sm">{{reply.body}}</p>
+                          <p class="mt-1 text-sm whitespace-pre-wrap">{{reply.body}}</p>
                         </div>
                       </div>
                     {{/each}}
@@ -607,7 +607,7 @@
                   <span class="font-bold text-sm">{{message.sender}}</span>
                   <span class="ml-2 text-sm text-gray-400">{{message.timestamp}}</span>
                 </div>
-                <p class="mt-1 text-sm">{{message.message}}</p>
+                <p class="mt-1 text-base whitespace-pre-wrap">{{message.message}}</p>
               </div>
             </div>
           {{/each}}
