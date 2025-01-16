@@ -246,9 +246,19 @@
           {{#if this.messages}}
             {{#each this.messages as |message index|}}
               <div class="flex space-x-4">
-                <div class="w-10 h-10 bg-purple-200 rounded-full flex-shrink-0 flex items-center justify-center">
-                  {{initials message.expand.user.name}}
-                </div>
+                {{#if message.avatarUrl}}
+                  <img 
+                    src={{message.avatarUrl}} 
+                    alt="User Avatar" 
+                    class="w-10 h-10 rounded-lg object-cover flex-shrink-0"
+                  >
+                {{else}}
+                  <div class="w-10 h-10 rounded-lg {{if message.isAgent 'bg-purple-200' 'bg-gray-200'}} flex-shrink-0 flex items-center justify-center">
+                    <span class="{{if message.isAgent 'text-purple-700' 'text-gray-700'}} font-medium">
+                      {{if message.isAgent 'AD' 'U'}}
+                    </span>
+                  </div>
+                {{/if}}
                 <div class="flex-1">
                   <div class="flex items-baseline">
                     <span class="font-bold">{{message.expand.user.name}}</span>

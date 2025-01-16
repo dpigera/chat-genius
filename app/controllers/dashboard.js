@@ -433,6 +433,15 @@ export default class DashboardController extends Controller {
     this.isThreadVisible = false; // Hide thread when changing channels
     try {
       const messages = await this.pocketbase.getChannelMessages(this.selectedChannelId);
+      messages.forEach(message => {
+        if (message?.expand?.user?.avatar) {
+          let host = config.APP.API_HOST;
+          let userId = message.expand.user.id;
+          let avatar = message.expand.user.avatar;
+          let url = `${host}/api/files/_pb_users_auth_/${userId}/${avatar}?token=`;
+          message.avatarUrl = url;
+        }
+      })
       this.messages = [];
       this.messages = messages;
 
