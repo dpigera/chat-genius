@@ -14,7 +14,7 @@ module.exports = function (environment) {
 
     APP: {
       PROMPT_API_URL: environment === 'production' 
-        ? 'https://chatgenius-prompt-server.fly.dev'
+        ? 'https://chatgenius-prompt-server-project2.fly.dev'
         : 'http://localhost:3000'
     },
   };
@@ -36,7 +36,7 @@ module.exports = function (environment) {
   }
 
   if (environment === 'production') {
-    ENV.APP.API_HOST = 'https://gauntlet-chatgenius-pocketbase-2.fly.dev';
+    ENV.APP.API_HOST = 'https://gauntlet-chatgenius-project2-final.fly.dev/';
   }
 
   return ENV;
